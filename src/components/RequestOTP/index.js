@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Input, Modal } from "antd";
-import axios from "axios";
-import configApi from "../../utils/configApi";
 import CountdownTimer from "../CounterTimer";
 import { useCountdown } from "../CounterTimer/Coundown";
-import { useDispatch } from "react-redux";
-import { exchangeCodeHandler } from "../../redux/ExchangeCode/actions";
-import { spinGiftHandler } from "../../redux/SpinGift/actions";
 
 const RequestOTP = ({
   handleCancel,
@@ -17,16 +12,14 @@ const RequestOTP = ({
   setStartCountdown,
   setIsModalOpenNotify,
 }) => {
-  const dispatch = useDispatch();
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const configJson = require("../../test.json");
+  const masterData = window.masterData;
+  const utopWidgetConfig = window.utopWidgetConfig;
   const [expired, setExpired] = useState(false);
 
   const [days, hours, minutes, seconds] = useCountdown(
     startCoutdown +
-      configJson.flowConfiguration.dataStep2.nodes[0].dataFlow.eventConfig
-        .otpTimeValid *
-        1000
+      masterData.dataStep2.nodes[0].dataFlow.eventConfig.otpTimeValid * 1000
   );
   useEffect(() => {
     if (days + hours + minutes + seconds <= 0) {
@@ -34,63 +27,85 @@ const RequestOTP = ({
     }
   }, [seconds]);
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     setLoadingSubmit(true);
-    dispatch(
-      exchangeCodeHandler(
-        {
-          campaignId: configApi.campaignId,
+    let statusApiExchangeCode = 0;
+    try {
+      const resExchangeCode = await window.utopWidget
+        .exchangeCode({
+          campaignId: utopWidgetConfig.campaignId,
           code: formSubmit.inputLotteryCode,
-          bizId: configApi.bizId,
+          bizId: utopWidgetConfig.bizId,
           phoneNumber: formSubmit.phoneNumber,
           otp: values.OTP.trim(),
-          formData: configJson,
-        },
-        (res) => {
+          formData: masterData,
+        })
+        .then((res) => {
+          if (res.status >= 200 && res.status <= 300) {
+            statusApiExchangeCode = 1;
+          }
           setLoadingSubmit(false);
-          dispatch(
-            spinGiftHandler(
-              {
-                bizId: configApi.bizId,
-                campaignId: configApi.campaignId,
-                phoneNumber: formSubmit.phoneNumber,
-                transactionId: res.transactionId,
-                timestamp: res.timestamp,
-                signature: res.signature,
-              },
-              () => {
-                handleOk();
-                setIsModalOpenNotify(true);
-              }
-            )
-          );
-        },
-        () => {
-          setLoadingSubmit(false);
+          return res.json();
+        })
+        .then((resExchangeCode) => {
+          return resExchangeCode;
+        });
+      console.log("resExchangeCode", resExchangeCode);
+
+      if (statusApiExchangeCode === 1) {
+        const resSpinGift = await window.utopWidget
+          .spinGift({
+            bizId: utopWidgetConfig.bizId,
+            campaignId: utopWidgetConfig.campaignId,
+            phoneNumber: formSubmit.phoneNumber,
+            transactionId: resExchangeCode.transactionId,
+            timestamp: resExchangeCode.timestamp,
+            signature: resExchangeCode.signature,
+          })
+          .then((res) => {
+            setLoadingSubmit(false);
+            return res.json();
+          })
+          .then((resSpinGift) => {
+            const notiContent = {
+              message: resSpinGift?.message,
+              giftName: resSpinGift?.giftName,
+            };
+            localStorage.setItem("notiContent", JSON.stringify(notiContent));
+          });
+      } else {
+        if (resExchangeCode?.error?.code === "InvalidCode") {
+          const notiContent = {
+            message:
+              masterData.dataStep2.nodes[0].dataFlow.eventConfig
+                .invalidCodeContent.invalidCode,
+          };
+          localStorage.setItem("notiContent", JSON.stringify(notiContent));
+        } else {
+          const notiContent = {
+            message:
+              masterData.dataStep2.nodes[0].dataFlow.eventConfig
+                .invalidCodeContent.invalidOTP,
+          };
+          localStorage.setItem("notiContent", JSON.stringify(notiContent));
         }
-      )
-    );
+      }
+    } catch {}
+
+    handleOk();
+    setIsModalOpenNotify(true);
   };
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-  const handleResendCode = () => {
-    axios
-      .request({
-        method: "POST",
-        url: `${configApi.baseUrl}/cppromotion/requestotp`,
-        data: {
-          campaignId: "6a4b6c03-6a07-47f1-b433-9cebbf65ebb9",
-          phoneNumber: formSubmit.phoneNumber,
-        },
-        headers: {
-          "Ocp-Apim-Subscription-Key": configApi.subkey,
-        },
-      })
-      .then((res) => {
-        setExpired(false);
-        setStartCountdown(new Date().getTime());
-      });
+  const handleResendCode = async () => {
+    await window.utopWidget.requestOTP({
+      campaignId: window.utopWidgetConfig.campaignId,
+      phoneNumber: formSubmit.phoneNumber.trim(),
+      bizId: window.utopWidgetConfig.bizId,
+    });
+    setExpired(false);
+    setStartCountdown(new Date().getTime());
   };
   return (
     <Modal
@@ -127,8 +142,8 @@ const RequestOTP = ({
               setExpired={setExpired}
               targetDate={
                 startCoutdown +
-                configJson.flowConfiguration.dataStep2.nodes[0].dataFlow
-                  .eventConfig.otpTimeValid *
+                masterData.dataStep2.nodes[0].dataFlow.eventConfig
+                  .otpTimeValid *
                   1000
               }
             />

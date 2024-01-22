@@ -1,15 +1,8 @@
 import React, { useState } from "react";
-import { Button, Form, Input, Modal } from "antd";
-import { useSelector } from "react-redux";
-import { spinGiftSelector } from "../../redux/SpinGift/selectors";
+import { Button, Modal } from "antd";
+
 const NotifyPopup = ({ handleCancel, handleOk, isModalOpen }) => {
-  const onFinish = (values) => {
-    console.log("Success:", values);
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
-  const spinGiftResult = useSelector((state) => spinGiftSelector(state));
+  const notiContent = JSON.parse(localStorage.getItem("notiContent"));
   return (
     <Modal
       footer={false}
@@ -20,12 +13,8 @@ const NotifyPopup = ({ handleCancel, handleOk, isModalOpen }) => {
     >
       <div className="mx-auto text-center">
         <h4>Thông báo</h4>
-        <p>{spinGiftResult?.giftName}</p>
-        <p>
-          {spinGiftResult?.error
-            ? spinGiftResult?.error?.message
-            : spinGiftResult?.message}
-        </p>
+        <p>{notiContent?.giftName}</p>
+        <p>{notiContent?.message}</p>
         <Button type="primary" onClick={handleOk}>
           OK
         </Button>

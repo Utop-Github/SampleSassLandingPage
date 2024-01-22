@@ -1,43 +1,31 @@
 import React, { createContext, useEffect, useState } from "react";
-import Header from "../../components/Header";
 import { Button, Checkbox, Form, Input } from "antd";
 import RequestOTP from "../../components/RequestOTP";
-import axios from "axios";
-import configApi from "../../utils/configApi";
-import { useDispatch } from "react-redux";
-import { requestOTPHandler } from "../../redux/RequestOTP/actions";
+
 import NotifyPopup from "../NotifyPopup";
 
 export const ModalContext = createContext();
 export default function FormSubmit() {
-  const configJson = require("../../test.json");
+  const masterData = window.masterData;
   const [form] = Form.useForm();
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [startCoutdown, setStartCountdown] = useState();
   const [isModalOpenOTP, setIsModalOpenOTP] = useState(false);
   const [isModalOpenNotify, setIsModalOpenNotify] = useState(false);
 
-  const dispatch = useDispatch();
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const onFinish = async (values) => {
     setLoadingSubmit(true);
-    dispatch(
-      requestOTPHandler(
-        {
-          campaignId: configApi.campaignId,
-          phoneNumber: values.phoneNumber.trim(),
-          bizId: configApi.bizId,
-        },
-        () => {
-          setLoadingSubmit(false);
-          setStartCountdown(new Date().getTime());
-          showModal();
-        },
-        () => {
-          setLoadingSubmit(false);
-        }
-      )
-    );
+    try {
+      const result = await window.utopWidget.requestOTP({
+        campaignId: window.utopWidgetConfig.campaignId,
+        phoneNumber: values.phoneNumber.trim(),
+        bizId: window.utopWidgetConfig.bizId,
+      });
+      console.log("result", result);
+      setLoadingSubmit(false);
+      showModal();
+      setStartCountdown(new Date().getTime());
+    } catch {}
   };
 
   const showModal = () => {
@@ -59,7 +47,7 @@ export default function FormSubmit() {
         onFinish={onFinish}
         autoComplete="off"
       >
-        {configJson.flowConfiguration.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields.map(
+        {masterData.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields.map(
           (item) => (
             <Form.Item
               key={item.attributeName}

@@ -37,8 +37,8 @@ const RequestOTP = ({
           code: formSubmit.inputLotteryCode,
           bizId: utopWidgetConfig.bizId,
           phoneNumber: formSubmit.phoneNumber,
-          otp: values.OTP.trim(),
-          formData: masterData,
+          // otp: values.OTP.trim(),
+          // formData: masterData,
         })
         .then((res) => {
           if (res.status >= 200 && res.status <= 300) {
@@ -74,20 +74,38 @@ const RequestOTP = ({
             localStorage.setItem("notiContent", JSON.stringify(notiContent));
           });
       } else {
-        if (resExchangeCode?.error?.code === "InvalidCode") {
-          const notiContent = {
-            message:
-              masterData.dataStep2.nodes[0].dataFlow.eventConfig
-                .invalidCodeContent.invalidCode,
-          };
-          localStorage.setItem("notiContent", JSON.stringify(notiContent));
-        } else {
-          const notiContent = {
-            message:
-              masterData.dataStep2.nodes[0].dataFlow.eventConfig
-                .invalidCodeContent.invalidOTP,
-          };
-          localStorage.setItem("notiContent", JSON.stringify(notiContent));
+        switch (resExchangeCode?.error?.code.toLowerCase()) {
+          case "invalidcode": {
+            const notiContent = {
+              message:
+                masterData.dataStep2.nodes[0].dataFlow.eventConfig
+                  .invalidCodeContent.invalidCode,
+            };
+            localStorage.setItem("notiContent", JSON.stringify(notiContent));
+            break;
+          }
+          case "invalidotp": {
+            const notiContent = {
+              message:
+                masterData.dataStep2.nodes[0].dataFlow.eventConfig
+                  .invalidCodeContent.invalidOTP,
+            };
+            localStorage.setItem("notiContent", JSON.stringify(notiContent));
+            break;
+          }
+          case "holdcodefailure": {
+            const notiContent = {
+              message:
+                masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeUsed.replaceAll(
+                  "@(lotterycode)",
+                  formSubmit.inputLotteryCode
+                ),
+            };
+            localStorage.setItem("notiContent", JSON.stringify(notiContent));
+            break;
+          }
+          default:
+            break;
         }
       }
     } catch {}

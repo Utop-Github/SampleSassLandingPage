@@ -25,7 +25,10 @@ export default function FormSubmit() {
       setLoadingSubmit(false);
       showModal();
       setStartCountdown(new Date().getTime());
-    } catch {}
+    } catch (err) {
+      console.error(err);
+      setLoadingSubmit(false);
+    }
   };
 
   const showModal = () => {

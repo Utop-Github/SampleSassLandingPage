@@ -108,7 +108,9 @@ const RequestOTP = ({
             break;
         }
       }
-    } catch {}
+    } catch (err) {
+      console.error(err)
+    }
 
     handleOk();
     setIsModalOpenNotify(true);

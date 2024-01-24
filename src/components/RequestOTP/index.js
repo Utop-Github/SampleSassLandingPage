@@ -33,9 +33,9 @@ const RequestOTP = ({
     try {
       const resExchangeCode = await window.utopWidget
         .exchangeCode({
-          campaignId: utopWidgetConfig.campaignId,
+          campaignId: masterData.campaignInfo.campaignId,
+          bizId: masterData.campaignInfo.bizId,
           code: formSubmit.inputLotteryCode,
-          bizId: utopWidgetConfig.bizId,
           phoneNumber: formSubmit.phoneNumber,
           // otp: values.OTP.trim(),
           // formData: masterData,
@@ -55,8 +55,8 @@ const RequestOTP = ({
       if (statusApiExchangeCode === 1) {
         const resSpinGift = await window.utopWidget
           .spinGift({
-            bizId: utopWidgetConfig.bizId,
-            campaignId: utopWidgetConfig.campaignId,
+            campaignId: masterData.campaignInfo.campaignId,
+            bizId: masterData.campaignInfo.bizId,
             phoneNumber: formSubmit.phoneNumber,
             transactionId: resExchangeCode.transactionId,
             timestamp: resExchangeCode.timestamp,
@@ -120,9 +120,9 @@ const RequestOTP = ({
   };
   const handleResendCode = async () => {
     await window.utopWidget.requestOTP({
-      campaignId: window.utopWidgetConfig.campaignId,
+      campaignId: masterData.campaignInfo.campaignId,
+      bizId: masterData.campaignInfo.bizId,
       phoneNumber: formSubmit.phoneNumber.trim(),
-      bizId: window.utopWidgetConfig.bizId,
     });
     setExpired(false);
     setStartCountdown(new Date().getTime());

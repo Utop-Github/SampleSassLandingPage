@@ -17,9 +17,9 @@ export default function FormSubmit() {
     setLoadingSubmit(true);
     try {
       const result = await window.utopWidget.requestOTP({
-        campaignId: window.utopWidgetConfig.campaignId,
+        campaignId: masterData.campaignInfo.campaignId,
+        bizId: masterData.campaignInfo.bizId,
         phoneNumber: values.phoneNumber.trim(),
-        bizId: window.utopWidgetConfig.bizId,
       });
       console.log("result", result);
       setLoadingSubmit(false);

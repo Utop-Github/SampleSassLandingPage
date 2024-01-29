@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Modal } from "antd";
-import CountdownTimer from "../CounterTimer";
-import { useCountdown } from "../CounterTimer/Coundown";
+import React, { useEffect, useState } from 'react'
+import { Button, Form, Input, Modal } from 'antd'
+import CountdownTimer from '../CounterTimer'
+import { useCountdown } from '../CounterTimer/Coundown'
 
 const RequestOTP = ({
   handleCancel,
@@ -12,145 +12,49 @@ const RequestOTP = ({
   setStartCountdown,
   setIsModalOpenNotify,
 }) => {
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const masterData = window.masterData;
-  const utopWidgetConfig = window.utopWidgetConfig;
-  const [expired, setExpired] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const masterData = window.masterData
+  const utopWidgetConfig = window.utopWidgetConfig
+  const [expired, setExpired] = useState(false)
 
   const [days, hours, minutes, seconds] = useCountdown(
-    startCoutdown +
-      masterData.dataStep2.nodes[0].dataFlow.eventConfig.otpTimeValid * 1000
-  );
+    startCoutdown + masterData.dataStep2.nodes[0].dataFlow.eventConfig.otpTimeValid * 1000
+  )
   useEffect(() => {
     if (days + hours + minutes + seconds <= 0) {
-      setExpired(true);
+      setExpired(true)
     }
-  }, [seconds]);
+  }, [seconds])
 
   const onFinish = async (values) => {
-    setLoadingSubmit(true);
-    let statusApiExchangeCode = 0;
-    try {
-      const resExchangeCode = await window.utopWidget
-        .exchangeCode({
-          campaignId: masterData.campaignInfo.campaignId,
-          bizId: masterData.campaignInfo.bizId,
-          code: formSubmit.inputLotteryCode,
-          phoneNumber: formSubmit.phoneNumber,
-          // otp: values.OTP.trim(),
-          // formData: masterData,
-        })
-        .then((res) => {
-          if (res.status >= 200 && res.status <= 300) {
-            statusApiExchangeCode = 1;
-          }
-          setLoadingSubmit(false);
-          return res.json();
-        })
-        .then((resExchangeCode) => {
-          return resExchangeCode;
-        });
-      console.log("resExchangeCode", resExchangeCode);
-
-      if (statusApiExchangeCode === 1) {
-        const resSpinGift = await window.utopWidget
-          .spinGift({
-            campaignId: masterData.campaignInfo.campaignId,
-            bizId: masterData.campaignInfo.bizId,
-            phoneNumber: formSubmit.phoneNumber,
-            transactionId: resExchangeCode.transactionId,
-            timestamp: resExchangeCode.timestamp,
-            signature: resExchangeCode.signature,
-          })
-          .then((res) => {
-            setLoadingSubmit(false);
-            return res.json();
-          })
-          .then((resSpinGift) => {
-            const notiContent = {
-              message: resSpinGift?.message,
-              giftName: resSpinGift?.giftName,
-            };
-            localStorage.setItem("notiContent", JSON.stringify(notiContent));
-          });
-      } else {
-        switch (resExchangeCode?.error?.code.toLowerCase()) {
-          case "invalidcode": {
-            const notiContent = {
-              message:
-                masterData.dataStep2.nodes[0].dataFlow.eventConfig
-                  .invalidCodeContent.invalidCode,
-            };
-            localStorage.setItem("notiContent", JSON.stringify(notiContent));
-            break;
-          }
-          case "invalidotp": {
-            const notiContent = {
-              message:
-                masterData.dataStep2.nodes[0].dataFlow.eventConfig
-                  .invalidCodeContent.invalidOTP,
-            };
-            localStorage.setItem("notiContent", JSON.stringify(notiContent));
-            break;
-          }
-          case "holdcodefailure": {
-            const notiContent = {
-              message:
-                masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeUsed.replaceAll(
-                  "@(lotterycode)",
-                  formSubmit.inputLotteryCode
-                ),
-            };
-            localStorage.setItem("notiContent", JSON.stringify(notiContent));
-            break;
-          }
-          default:
-            break;
-        }
-      }
-    } catch (err) {
-      console.error(err)
-    }
-
-    handleOk();
-    setIsModalOpenNotify(true);
-  };
+    setLoadingSubmit(true)
+    handleOk()
+    setIsModalOpenNotify(true)
+  }
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
-  };
+    console.log('Failed:', errorInfo)
+  }
   const handleResendCode = async () => {
     await window.utopWidget.requestOTP({
       campaignId: masterData.campaignInfo.campaignId,
       bizId: masterData.campaignInfo.bizId,
       phoneNumber: formSubmit.phoneNumber.trim(),
-    });
-    setExpired(false);
-    setStartCountdown(new Date().getTime());
-  };
+    })
+    setExpired(false)
+    setStartCountdown(new Date().getTime())
+  }
   return (
-    <Modal
-      destroyOnClose
-      footer={false}
-      closable={false}
-      open={isModalOpen}
-      onOk={handleOk}
-      onCancel={handleCancel}
-    >
+    <Modal destroyOnClose footer={false} closable={false} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
       <div className="mx-auto text-center">
         <h4>Thông báo</h4>
-        <Form
-          name="OTP"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
+        <Form name="OTP" onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off">
           <Form.Item
             label="OTP"
             name="OTP"
             rules={[
               {
                 required: true,
-                message: "Vui lòng nhập OTP",
+                message: 'Vui lòng nhập OTP',
               },
             ]}
           >
@@ -160,12 +64,7 @@ const RequestOTP = ({
             {!expired && <span> Mã OTP sẽ hết hiệu lực trong </span>}
             <CountdownTimer
               setExpired={setExpired}
-              targetDate={
-                startCoutdown +
-                masterData.dataStep2.nodes[0].dataFlow.eventConfig
-                  .otpTimeValid *
-                  1000
-              }
+              targetDate={startCoutdown + masterData.dataStep2.nodes[0].dataFlow.eventConfig.otpTimeValid * 1000}
             />
           </div>
 
@@ -181,6 +80,6 @@ const RequestOTP = ({
         </Form>
       </div>
     </Modal>
-  );
-};
-export default RequestOTP;
+  )
+}
+export default RequestOTP

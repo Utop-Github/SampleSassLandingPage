@@ -7,6 +7,7 @@ import NotifyPopup from '../NotifyPopup'
 export const ModalContext = createContext()
 export default function FormSubmit() {
   const masterData = window.masterData
+  const utopWidget = window.utopWidget
   const [form] = Form.useForm()
   const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [startCoutdown, setStartCountdown] = useState()
@@ -122,6 +123,7 @@ export default function FormSubmit() {
       }
     } catch (err) {
       console.error('Error', err)
+      message.error(err.message, 5)
       setLoadingSubmit(false)
     }
   }
@@ -142,7 +144,7 @@ export default function FormSubmit() {
   return (
     <div className=" d-flex justify-content-center mt-3">
       <Form form={form} className="form-body" name="basic" onFinish={onFinish} autoComplete="off">
-        {masterData.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields.map((item) => (
+        {utopWidget.getFieldsFormSubmit().map((item) => (
           <Form.Item
             key={item.attributeName}
             label={item.labelText}

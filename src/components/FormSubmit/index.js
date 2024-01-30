@@ -163,7 +163,7 @@ export default function FormSubmit() {
         ))}
 
         <Form.Item>
-          <Button loading={loadingSubmit} type="primary" htmlType="submit">
+          <Button id="utopSubmitFormBtn" loading={loadingSubmit} type="primary" htmlType="submit">
             Submit
           </Button>
         </Form.Item>

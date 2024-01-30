@@ -34,11 +34,11 @@ window.utopWidget = {
             reject({ error: 'invalidRequired', message: `Field ${field.attributeName} is required` })
           switch (field.attributeName) {
             case 'phoneNumber': {
-              const reg = /^[0-9]{8,}$/g
+              const reg = /^[0-9]{9,10}$/g
               if (!reg.test(data.phoneNumber)) {
                 reject({
                   error: 'invalidPhoneNumber',
-                  message: `Invalid field phoneNumber - phoneNumber must be more 8 digits`,
+                  message: `Invalid field phoneNumber - phoneNumber must be 9-10 digits`,
                 })
               }
               break
@@ -84,6 +84,28 @@ window.utopWidget = {
     else return false
   },
   exchangeCode: function (data) {
+    const button_submit = document.getElementById('utopSubmitFormBtn')
+    if (!window?.UTopSDK?.Tracking || !button_submit) {
+      return Promise.reject({
+        error: 'buttonSubmitId',
+        message: 'Cannot find button submit',
+      })
+    }
+    window.UTopSDK.Tracking.logClick({
+      button_id: 'click_button',
+      button_name: button_submit.textContent,
+      page_location: window.location.href,
+      service_id: window.masterData.campaignInfo.campaignId,
+      custom_field: {
+        name: 'Click',
+        lottery_code: data.code,
+        phone_number: data.phoneNumber,
+        resource_name: window.masterData.campaignInfo.campaignName,
+        resource_id: window.masterData.campaignInfo.campaignId,
+        resource_type: 'Campaign Studio',
+      },
+      isAnonymous: true,
+    })
     return fetch(`${window.utopWidgetConfig.baseUrl}/cppromotion/campaign/lotterycode/exchange`, {
       method: 'POST',
       headers: {

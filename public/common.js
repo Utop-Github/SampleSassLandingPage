@@ -24,7 +24,8 @@ window.utopWidget = {
           message: 'The submitted form has field lengths that do not match the settings in masterData',
         })
       } else {
-        window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields.map((field) => {
+        for (let field of window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields) {
+          if (!field.isRequired) continue
           if (!listKeys.includes(field.attributeName))
             reject({
               error: 'invalidField',
@@ -66,7 +67,7 @@ window.utopWidget = {
             default:
               break
           }
-        })
+        }
         resolve(true)
       }
     })

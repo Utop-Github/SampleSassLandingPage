@@ -13,7 +13,7 @@ const NotifyPopup = ({ handleCancel, handleOk, isModalOpen }) => {
     >
       <div className="mx-auto text-center">
         <h4>Thông báo</h4>
-        <p>{notiContent?.giftName}</p>
+        {/* <p>{notiContent?.giftName}</p> */}
         <p>{notiContent?.message}</p>
         <Button type="primary" onClick={handleOk}>
           OK

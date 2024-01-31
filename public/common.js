@@ -88,7 +88,7 @@ window.utopWidget = {
     const button_submit = document.getElementById('utopSubmitFormBtn')
     if (!window?.UTopSDK?.Tracking || !button_submit) {
       return Promise.reject({
-        error: 'buttonSubmitId',
+        error: 'notFoundSubmitBtn',
         message: 'Cannot find button submit',
       })
     }

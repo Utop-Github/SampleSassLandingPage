@@ -161,7 +161,6 @@ window.utopWidget = {
     })
   },
   getMessageError: function (err) {
-    debugger
     switch (err?.code.toLowerCase()) {
       case 'missingrequiredfield':
       case 'createtransactionfail':
@@ -171,7 +170,8 @@ window.utopWidget = {
           message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
         }
       }
-      case 'campaignisnotfound': {
+      case 'campaignisnotfound':
+      case 'campaignisnotpublished': {
         return {
           ...err,
           message: 'Không tìm thấy chiến dịch, vui lòng kiểm tra lại!',

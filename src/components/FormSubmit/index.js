@@ -31,100 +31,35 @@ export default function FormSubmit() {
       // }
       const validate = await window.utopWidget.validateFormSubmit(values)
       if (validate) {
-        let statusApiExchangeCode = 0
-        const resExchangeCode = await window.utopWidget
-          .exchangeCode({
-            campaignId: masterData.campaignInfo.campaignId,
-            bizId: masterData.campaignInfo.bizId,
-            code: values.inputLotteryCode,
-            phoneNumber: values.phoneNumber,
-            // otp: values.OTP.trim(),
-            // formData: masterData,
-          })
-          .then((res) => {
-            if (res.status >= 200 && res.status <= 300) {
-              statusApiExchangeCode = 1
-              message.success('Gửi thành công!')
-            }
-            return res.json()
-          })
-          .then((resExchangeCode) => {
-            return resExchangeCode
-          })
-        if (statusApiExchangeCode === 1) {
-          console.log('resExchangeCode', resExchangeCode)
-          const resSpinGift = await window.utopWidget
-            .spinGift({
-              campaignId: masterData.campaignInfo.campaignId,
-              bizId: masterData.campaignInfo.bizId,
-              phoneNumber: values.phoneNumber,
-              transactionId: resExchangeCode.transactionId,
-              timestamp: resExchangeCode.timestamp,
-              signature: resExchangeCode.signature,
-            })
-            .then((res) => {
-              setLoadingSubmit(false)
-              return res.json()
-            })
-            .then((resSpinGift) => {
-              setIsModalOpenNotify(true)
-              const notiContent = {
-                message: masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.winningContent.replaceAll(
-                  '@(giftname)',
-                  resSpinGift?.giftName
-                ),
-                giftName: resSpinGift?.giftName,
-                giftId: resSpinGift?.giftId,
-              }
-              localStorage.setItem('notiContent', JSON.stringify(notiContent))
-            })
-        } else {
-          setLoadingSubmit(false)
-          setIsModalOpenNotify(true)
-          switch (resExchangeCode?.error?.code.toLowerCase()) {
-            case 'invalidcode': {
-              const notiContent = {
-                message: masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.invalidCode,
-              }
-              localStorage.setItem('notiContent', JSON.stringify(notiContent))
-              break
-            }
-            case 'invalidotp': {
-              const notiContent = {
-                message: masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.invalidOTP,
-              }
-              localStorage.setItem('notiContent', JSON.stringify(notiContent))
-              break
-            }
-            case 'codeisused': {
-              const notiContent = {
-                message: masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeUsed.replaceAll(
-                  '@(lotterycode)',
-                  values.inputLotteryCode
-                ),
-              }
-              localStorage.setItem('notiContent', JSON.stringify(notiContent))
-              break
-            }
-            case 'holdcodefailure': {
-              const notiContent = {
-                message: masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeUsed.replaceAll(
-                  '@(lotterycode)',
-                  values.inputLotteryCode
-                ),
-              }
-              localStorage.setItem('notiContent', JSON.stringify(notiContent))
-              break
-            }
-            default:
-              break
-          }
-        }
+        const resExchangeCode = await window.utopWidget.exchangeCode({
+          campaignId: masterData.campaignInfo.campaignId,
+          bizId: masterData.campaignInfo.bizId,
+          code: values.inputLotteryCode,
+          phoneNumber: values.phoneNumber,
+          // otp: values.OTP.trim(),
+          // formData: masterData,
+        })
+        console.log('resExchangeCode', resExchangeCode)
+        const resSpinGift = await window.utopWidget.spinGift({
+          campaignId: masterData.campaignInfo.campaignId,
+          bizId: masterData.campaignInfo.bizId,
+          phoneNumber: values.phoneNumber,
+          transactionId: resExchangeCode.transactionId,
+          timestamp: resExchangeCode.timestamp,
+          signature: resExchangeCode.signature,
+        })
+        console.log('resSpinGift', resSpinGift)
+        setLoadingSubmit(false)
+        const notiContent = { ...resSpinGift }
+        localStorage.setItem('notiContent', JSON.stringify(notiContent))
+        setIsModalOpenNotify(true)
       }
     } catch (err) {
-      console.error('Error', err)
-      message.error(err.message, 5)
       setLoadingSubmit(false)
+      const messageErr = window.utopWidget.getMessageError(err)
+      const notiContent = { ...messageErr }
+      localStorage.setItem('notiContent', JSON.stringify(notiContent))
+      setIsModalOpenNotify(true)
     }
   }
 

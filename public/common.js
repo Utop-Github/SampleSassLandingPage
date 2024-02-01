@@ -1,8 +1,6 @@
 window.utopWidgetConfig = {
   baseUrl: 'https://apiqa.utop.io',
   subKey: 'bb54304525e74e44be2ed29ab31f1a5e',
-  campaignId: 'e3a29f34-0036-48ad-a78b-7288ae9829c6',
-  bizId: '3faa1971-45f8-41d9-901e-699bb3f41d7e',
 }
 window.utopWidget = {
   checkData: function () {
@@ -20,7 +18,7 @@ window.utopWidget = {
     return new Promise((resolve, reject) => {
       if (window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields.length !== listKeys.length) {
         reject({
-          error: 'invalidLength',
+          code: 'InvalidLength',
           message: 'The submitted form has field lengths that do not match the settings in masterData',
         })
       } else {
@@ -28,17 +26,17 @@ window.utopWidget = {
           if (!field.isRequired) continue
           if (!listKeys.includes(field.attributeName))
             reject({
-              error: 'invalidField',
+              code: 'InvalidField',
               message: `Cannot find field ${field.attributeName} to validate`,
             })
           if (field.isRequired && !data[`${field.attributeName}`])
-            reject({ error: 'invalidRequired', message: `Field ${field.attributeName} is required` })
+            reject({ code: 'InvalidRequired', message: `Field ${field.attributeName} is required` })
           switch (field.attributeName) {
             case 'phoneNumber': {
               const reg = /^[0-9]{9,10}$/g
               if (!reg.test(data.phoneNumber)) {
                 reject({
-                  error: 'invalidPhoneNumber',
+                  code: 'InvalidPhoneNumber',
                   message: `Invalid field phoneNumber - phoneNumber must be 9-10 digits`,
                 })
               }
@@ -48,7 +46,7 @@ window.utopWidget = {
               const reg = /^[a-zA-Zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ\s]{1,}$/gi
               if (!reg.test(data.name)) {
                 reject({
-                  error: 'invalidName',
+                  code: 'InvalidName',
                   message: `Invalid field name - name must be only word`,
                 })
               }
@@ -58,7 +56,7 @@ window.utopWidget = {
               const reg = /^(3[01]|[12][0-9]|0?[1-9])(\/|-)(1[0-2]|0[1-9])\2([0-9]{2})?[0-9]{2}$/g
               if (!reg.test(data.dob)) {
                 reject({
-                  error: 'invalidDob',
+                  code: 'InvalidDob',
                   message: `Invalid field dob - correct pattern: dd/mm/yyyy | dd-mm-yyyy | dd/mm/yy | dd-mm-yy`,
                 })
               }
@@ -85,47 +83,174 @@ window.utopWidget = {
     else return false
   },
   exchangeCode: function (data) {
-    const button_submit = document.getElementById('utopSubmitFormBtn')
-    if (!window?.UTopSDK?.Tracking || !button_submit) {
-      return Promise.reject({
-        error: 'notFoundSubmitBtn',
-        message: 'Cannot find button submit',
+    return new Promise((resolve, reject) => {
+      const button_submit = document.getElementById('utopSubmitFormBtn')
+      if (!window?.UTopSDK?.Tracking || !button_submit) {
+        reject({
+          code: 'NotFoundSubmitBtn',
+          message: 'Cannot find button submit',
+        })
+      }
+      window.UTopSDK.Tracking.logClick({
+        button_id: 'click_button',
+        button_name: button_submit.textContent,
+        page_location: window.location.href,
+        service_id: window.masterData.campaignInfo.campaignId,
+        custom_field: {
+          name: 'Click',
+          lottery_code: data.code,
+          phone_number: data.phoneNumber,
+          resource_name: window.masterData.campaignInfo.campaignName,
+          resource_id: window.masterData.campaignInfo.campaignId,
+          resource_type: 'Campaign Studio',
+        },
+        isAnonymous: true,
       })
-    }
-    window.UTopSDK.Tracking.logClick({
-      button_id: 'click_button',
-      button_name: button_submit.textContent,
-      page_location: window.location.href,
-      service_id: window.masterData.campaignInfo.campaignId,
-      custom_field: {
-        name: 'Click',
-        lottery_code: data.code,
-        phone_number: data.phoneNumber,
-        resource_name: window.masterData.campaignInfo.campaignName,
-        resource_id: window.masterData.campaignInfo.campaignId,
-        resource_type: 'Campaign Studio',
-      },
-      isAnonymous: true,
-    })
-    return fetch(`${window.utopWidgetConfig.baseUrl}/cppromotion/campaign/lotterycode/exchange`, {
-      method: 'POST',
-      headers: {
-        'Ocp-Apim-Subscription-Key': window.utopWidgetConfig.subKey,
-      },
-      body: JSON.stringify(data),
-    })
-  },
-  spinGift: function (data) {
-    window.utopWidget.checkData()
-    if (window.masterData.dataStep2.nodes.length > 1) {
-      return fetch(`${window.utopWidgetConfig.baseUrl}/cppromotion/campaign/spin`, {
+      fetch(`${window.utopWidgetConfig.baseUrl}/cppromotion/campaign/lotterycode/exchange`, {
         method: 'POST',
         headers: {
           'Ocp-Apim-Subscription-Key': window.utopWidgetConfig.subKey,
         },
         body: JSON.stringify(data),
       })
-    } else return false
+        .then((res) => res.json())
+        .then((result) => {
+          if (result?.error)
+            reject({
+              code: result.error.code,
+              message: result.error.message,
+              lotteryCode: data.code,
+              phoneNumber: data.phoneNumber,
+            })
+          else resolve(result)
+        })
+    })
+  },
+  spinGift: function (data) {
+    window.utopWidget.checkData()
+    return new Promise((resolve, reject) => {
+      if (window.masterData.dataStep2.nodes.length > 1) {
+        fetch(`${window.utopWidgetConfig.baseUrl}/cppromotion/campaign/spin`, {
+          method: 'POST',
+          headers: {
+            'Ocp-Apim-Subscription-Key': window.utopWidgetConfig.subKey,
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            if (result?.error)
+              reject({
+                code: result.error.code,
+                message: result.error.message,
+                phoneNumber: data.phoneNumber,
+              })
+            else {
+              resolve({
+                // ...result,
+                code: 'AchieveGift',
+                message:
+                  window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.winningContent.replaceAll(
+                    '@(giftname)',
+                    result?.giftName
+                  ),
+              })
+            }
+          })
+      } else resolve(false)
+    })
+  },
+  getMessageError: function (err) {
+    debugger
+    switch (err?.code.toLowerCase()) {
+      case 'missingrequiredfield':
+      case 'createtransactionfail':
+      case 'addattemptfailed': {
+        return {
+          ...err,
+          message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
+        }
+      }
+      case 'campaignisnotfound': {
+        return {
+          ...err,
+          message: 'Không tìm thấy chiến dịch, vui lòng kiểm tra lại!',
+        }
+      }
+      case 'invalidotp': {
+        return {
+          ...err,
+          message: 'OTP không hợp lệ',
+        }
+      }
+      case 'otpisdisable': {
+        return {
+          ...err,
+          message: 'Không có thiết lập xác thực OTP',
+        }
+      }
+      case 'campaignnotstartyet': {
+        return {
+          ...err,
+          message:
+            window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.afterCampaign.replaceAll(
+              '@(startdate)',
+              window.masterData.campaignInfo.startDate
+            ),
+        }
+      }
+      case 'campaignfinished': {
+        return {
+          ...err,
+          message:
+            window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.campaignEnded.replaceAll(
+              '@(enddate)',
+              window.masterData.campaignInfo.endDate
+            ),
+        }
+      }
+      case 'userisblocked':
+      case 'blockuserfailed': {
+        return {
+          ...err,
+          message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.userBlocked.replaceAll(
+            '@(phonenumber)',
+            err.phoneNumber
+          ),
+        }
+      }
+      case 'codeisused': {
+        return {
+          ...err,
+          message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeUsed.replaceAll(
+            '@(lotterycode)',
+            err.lotteryCode
+          ),
+        }
+      }
+      case 'invalidcode':
+      case 'holdcodefailure':
+      case 'codeisnotfound': {
+        return {
+          ...err,
+          message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.invalidCode.replaceAll(
+            '@(lotterycode)',
+            err.lotteryCode
+          ),
+        }
+      }
+      case 'dailysubmissionexceeded':
+      case 'weeklysubmissionexceeded':
+      case 'monthlysubmissionexceeded':
+      case 'submissionexceeded': {
+        return {
+          ...err,
+          message: window.masterData.dataStep1.blockingContent.exceedLimit,
+        }
+      }
+      default:
+        return err
+    }
   },
   // isAnonymousMode: function () {
   //   return new Promise(function detect(resolve) {

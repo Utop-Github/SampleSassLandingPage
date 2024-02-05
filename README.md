@@ -1,17 +1,17 @@
 # CHIẾN DỊCH QUẢNG CÁO
 > **MỤC LỤC**
-[I. Giới thiệu](#i-giới-thiệu)
-[II. Hướng dẫn cài đặt nguồn](#ii-hướng-dẫn-cài-đặt-nguồn)
-[III. Các cú pháp truy xuất](#iii-các-cú-pháp-truy-xuất)
-[1. Truy xuất biến](#1-truy-xuất-biến)
-[2. Truy xuất hàm](#2-truy-xuất-hàm)
-[2.1 window.utopWidget.getFieldsFormSubmit()](#21-windowutopwidgetgetfieldsformsubmit)
-[2.2 window.utopWidget.validateFormSubmit(dataValidate)](#22-windowutopwidgetvalidateformsubmitdatavalidate)
-[2.3 window.utopWidget.getMessageError()](#23-windowutopwidgetgetmessageerrorerr)
-[2.4 window.utopWidget.requestOTP({campaignId, bizId, phoneNumber})](#24-windowutopwidgetrequestotpcampaignid-bizid-phonenumber)
-[2.5 window.utopWidget.exchangeCode({campaignId, bizId, phoneNumber, code, otp?})](#25-windowutopwidgetexchangecodecampaignid-bizid-phonenumber-code-otp)
-[2.6 window.utopWidget.spinGift({campaignId, bizId, phoneNumber, transactionId, timestamp, signature})](#26-windowutopwidgetspingiftcampaignid-bizid-phonenumber-transactionid-timestamp-signature)
-[IV. Danh sách mã lỗi](#iv-danh-sách-mã-lỗi)
+> [I. Giới thiệu](#i-giới-thiệu)
+> [II. Hướng dẫn cài đặt nguồn](#ii-hướng-dẫn-cài-đặt-nguồn)
+> [III. Các cú pháp truy xuất](#iii-các-cú-pháp-truy-xuất)
+> [1. Truy xuất biến](#1-truy-xuất-biến)
+> [2. Truy xuất hàm](#2-truy-xuất-hàm)
+> [2.1 window.utopWidget.getFieldsFormSubmit()](#21-windowutopwidgetgetfieldsformsubmit)
+> [2.2 window.utopWidget.validateFormSubmit(dataValidate)](#22-windowutopwidgetvalidateformsubmitdatavalidate)
+> [2.3 window.utopWidget.getMessageError()](#23-windowutopwidgetgetmessageerrorerr)
+> [2.4 window.utopWidget.requestOTP({campaignId, bizId, phoneNumber})](#24-windowutopwidgetrequestotpcampaignid-bizid-phonenumber)
+> [2.5 window.utopWidget.exchangeCode({campaignId, bizId, phoneNumber, code, otp?})](#25-windowutopwidgetexchangecodecampaignid-bizid-phonenumber-code-otp)
+> [2.6 window.utopWidget.spinGift({campaignId, bizId, phoneNumber, transactionId, timestamp, signature})](#26-windowutopwidgetspingiftcampaignid-bizid-phonenumber-transactionid-timestamp-signature)
+> [IV. Danh sách mã lỗi](#iv-danh-sách-mã-lỗi)
 <a name = "I"></a>
 
 ## I. Giới thiệu
@@ -93,7 +93,8 @@ UEngage cung cấp cho bạn hàm để lấy về danh sách các field đã đ
 }
 ```
 
-Bạn có thể tuỳ ý render và validate giá trị field theo mong muốn của bạn
+Bạn có thể tuỳ ý render và validate giá trị field theo mong muốn của bạn.
+
 _**Lưu ý**: Với `attributeName: 'zone'` thì sẽ có thêm field `listZone` với giá
 trị là mảng danh sách các zone bạn đã config trên portal_
 
@@ -114,6 +115,7 @@ console.log(listFields);
 #### 2.2 window.utopWidget.validateFormSubmit(dataValidate)
 
 UEngage cung cấp 1 hàm để hỗ trợ cho bạn validate các field trong biểu mẫu, nhưng bạn có thể validate theo cách của bạn.
+
 _**Lưu ý**: `dataValidate` là một Object với **key** ứng với `attributeName`, **value** ứng với giá trị mà bạn mapping với **key** đó. Nếu truyền sai UEngage sẽ không thể hỗ trợ bạn validate mà trả bạn mã lỗi. Hàm sẽ trả về 1 Promise, bạn có thể sử dụng `then-catch` hoặc `try-catch` để nhận kết quả từ hàm._
 
 Nếu hàm validate lỗi sẽ reject 1 Object với format:
@@ -232,6 +234,7 @@ try {
 
 Khi người dùng cuối điền thông tin và tham gia chiến dịch của bạn. UEngage cung cấp hàm để kiểm tra thông tin tham dự.
 Khi sử dụng hàm, vui lòng truyền giá trị số điện thoại ứng với key `phoneNumber` và giá trị mã thẻ cào ứng với key `code`. Hàm cung cấp api để call ‘Submit Lottery Code’ và sẽ trả về 1 Promise để bạn biết kết quả.
+
 Nếu **CÓ** thiết lập xác thực người dùng bằng mã OTP thì sẽ truyền giá trị OTP vào key `otp`
 
 _**Lưu ý**: Để sử dụng được hàm này, vui lòng ở ‘Button’ (hoặc thẻ tag) gọi hàm, đặt id cho thẻ tag với id như sau: `utopSubmitFormBtn`. Nếu **KHÔNG** tìm đc id ứng với thẻ đã gọi hàm thì sẽ trả lỗi._
@@ -250,6 +253,7 @@ Sau khi call api thì result bạn nhận đc sẽ
 ```
 
 Danh sách mã lỗi vui lòng tham khảo mục **_[IV](#iv-danh-sách-mã-lỗi)_** bên dưới
+
 Bạn có thể tuỳ ý catch mã lỗi để xử lý hoặc có thể sử dụng hàm `getMessageError` đã mô tả tại mục **_[2.3](#23-windowutopwidgetgetmessageerrorerr)_** mà UEngage cung cấp, giúp bạn xử lý mã lỗi.
 
 Ví dụ 1:
@@ -302,8 +306,11 @@ try {
 
 Sau bước kiểm tra thông tin người tham dự, bạn sẽ sử dụng hàm này để phát quà.
 Khi sử dụng, vui lòng truyền giá trị số điện thoại ứng với key `phoneNumber`. Hàm sẽ cung cấp cho bạn api để call ‘Achieve Gift’, sau đó, sẽ trả về 1 Promise để bạn biết kết quả.
+
 Các thông tin như: `transactionId`, `timestamp`, `signature` chỉ có được thông qua kết quả của việc call api ‘exchangeCode’ đã mô tả tại mục **_[2.5](#25-windowutopwidgetexchangecodecampaignid-bizid-phonenumber-code-otp)_**
+
 Nếu bạn không config widget ‘Achieve Gift’ trong bước 2 trên UEngage thì hàm sẽ trả về **`false`**
+
 Sau khi call api thì kết quả bạn nhận được là:
 
 - Nếu thành công sẽ là 1 format Object
@@ -325,6 +332,7 @@ Sau khi call api thì kết quả bạn nhận được là:
 ```
 
 Danh sách mã lỗi vui lòng tham khảo mục dưới **_[IV](#iv-danh-sách-mã-lỗi)_**
+
 Bạn có thể tuỳ ý catch mã lỗi để xử lý hoặc có thể sử dụng hàm
 `getMessageError` đã mô tả tại mục **_[2.3](#23-windowutopwidgetgetmessageerrorerr)_** mà UEngage cung cấp, giúp bạn xử lý mã lỗi.
 

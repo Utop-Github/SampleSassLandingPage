@@ -1,17 +1,29 @@
 # CHIẾN DỊCH QUẢNG CÁO
-> **MỤC LỤC**
-> [I. Giới thiệu](#i-giới-thiệu)
-> [II. Hướng dẫn cài đặt nguồn](#ii-hướng-dẫn-cài-đặt-nguồn)
-> [III. Các cú pháp truy xuất](#iii-các-cú-pháp-truy-xuất)
-> [1. Truy xuất biến](#1-truy-xuất-biến)
-> [2. Truy xuất hàm](#2-truy-xuất-hàm)
-> [2.1 window.utopWidget.getFieldsFormSubmit()](#21-windowutopwidgetgetfieldsformsubmit)
-> [2.2 window.utopWidget.validateFormSubmit(dataValidate)](#22-windowutopwidgetvalidateformsubmitdatavalidate)
-> [2.3 window.utopWidget.getMessageError()](#23-windowutopwidgetgetmessageerrorerr)
-> [2.4 window.utopWidget.requestOTP({campaignId, bizId, phoneNumber})](#24-windowutopwidgetrequestotpcampaignid-bizid-phonenumber)
-> [2.5 window.utopWidget.exchangeCode({campaignId, bizId, phoneNumber, code, otp?})](#25-windowutopwidgetexchangecodecampaignid-bizid-phonenumber-code-otp)
-> [2.6 window.utopWidget.spinGift({campaignId, bizId, phoneNumber, transactionId, timestamp, signature})](#26-windowutopwidgetspingiftcampaignid-bizid-phonenumber-transactionid-timestamp-signature)
-> [IV. Danh sách mã lỗi](#iv-danh-sách-mã-lỗi)
+ **MỤC LỤC**
+
+[I. Giới thiệu](#i-giới-thiệu)
+
+[II. Hướng dẫn cài đặt nguồn](#ii-hướng-dẫn-cài-đặt-nguồn)
+
+[III. Các cú pháp truy xuất](#iii-các-cú-pháp-truy-xuất)
+
+[1. Truy xuất biến](#1-truy-xuất-biến)
+
+[2. Truy xuất hàm](#2-truy-xuất-hàm)
+
+[2.1 window.utopWidget.getFieldsFormSubmit()](#21-windowutopwidgetgetfieldsformsubmit)
+
+[2.2 window.utopWidget.validateFormSubmit(dataValidate)](#22-windowutopwidgetvalidateformsubmitdatavalidate)
+
+[2.3 window.utopWidget.getMessageError()](#23-windowutopwidgetgetmessageerrorerr)
+
+[2.4 window.utopWidget.requestOTP({campaignId, bizId, phoneNumber})](#24-windowutopwidgetrequestotpcampaignid-bizid-phonenumber)
+
+[2.5 window.utopWidget.exchangeCode({campaignId, bizId, phoneNumber, code, otp?})](#25-windowutopwidgetexchangecodecampaignid-bizid-phonenumber-code-otp)
+
+[2.6 window.utopWidget.spinGift({campaignId, bizId, phoneNumber, transactionId, timestamp, signature})](#26-windowutopwidgetspingiftcampaignid-bizid-phonenumber-transactionid-timestamp-signature)
+
+[IV. Danh sách mã lỗi](#iv-danh-sách-mã-lỗi)
 <a name = "I"></a>
 
 ## I. Giới thiệu

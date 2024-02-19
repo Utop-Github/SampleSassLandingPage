@@ -16,11 +16,13 @@ export default function FormSubmit() {
   const listZone = useMemo(() => {
     const listOrigin = window.utopWidget.getListZone()
     if (listOrigin) {
+      // Reassign the value to match Antd's rendering structure
       const newList = listOrigin.map((item) => ({ value: item, label: item }))
       return newList
     }
     return []
   }, [])
+  const [listProvince, setListProvince] = useState([])
 
   const onFinish = async (values) => {
     let formatValues = { ...values }
@@ -90,6 +92,7 @@ export default function FormSubmit() {
   }
   useEffect(() => {
     window.utopWidget.requestOTP()
+    window.utopWidget.getListProvince().then((res) => setListProvince(res))
   }, [])
 
   return (
@@ -143,11 +146,12 @@ export default function FormSubmit() {
                 labelAlign="left"
               >
                 <Select
-                  mode="tags"
+                  mode={item.attributeName === 'province' ? '' : 'tags'}
                   style={{
                     width: '100%',
+                    textAlign: 'left',
                   }}
-                  options={item.attributeName === 'province' ? [] : listZone}
+                  options={item.attributeName === 'province' ? listProvince : listZone}
                 />
               </Form.Item>
             )}

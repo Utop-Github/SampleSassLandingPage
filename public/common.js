@@ -261,6 +261,18 @@ window.utopWidget = {
     }
     return false
   },
+  getListProvince: function () {
+    return new Promise((resolve, reject) => {
+      fetch(`${window.utopWidgetConfig.baseUrl}/cppromotion/provinces`, {
+        method: 'GET',
+        headers: {
+          'Ocp-Apim-Subscription-Key': window.utopWidgetConfig.subKey,
+        },
+      })
+        .then((res) => res.json())
+        .then((result) => resolve(result))
+    })
+  },
   // isAnonymousMode: function () {
   //   return new Promise(function detect(resolve) {
   //     var yes = function () {

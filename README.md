@@ -23,6 +23,10 @@
 
     - [2.6 window.utopWidget.spinGift({campaignId, bizId, phoneNumber, transactionId, timestamp, signature})](#26-windowutopwidgetspingiftcampaignid-bizid-phonenumber-transactionid-timestamp-signature)
 
+    - [2.7 window.utopWidget.getListZone()](#27-windowutopwidgetgetlistzone)
+
+    - [2.8 window.utopWidget.getListProvince()](#28-windowutopwidgetgetlistprovince)
+
 [IV. Danh sách mã lỗi](#iv-danh-sách-mã-lỗi)
 
 <a name = "I"></a>
@@ -386,6 +390,36 @@ try {
 } catch (err) {
   // handle error here
 }
+```
+
+<a name = "III-2-7"></a>
+
+#### 2.7 window.utopWidget.getListZone()
+
+UEngage cung cấp hàm để lấy danh sách khu vực mà bạn đã thiết lập tại widget “Submit Lottery Code Form” trong tab ‘Field’.
+Hàm sẽ trả về **`false`** nếu bạn không thiết lập trường này 
+
+Ví dụ:
+
+```js
+const listZone = window.utopWidget.getListZone();
+console.log(listZone); // ["Hồ Chí Minh", "Cần Thơ"]
+```
+
+<a name = "III-2-8"></a>
+
+#### 2.8 window.utopWidget.getListProvince()
+
+UEngage cung cấp hàm để lấy danh sách tên 63 tỉnh thành Việt Nam. Hàm sẽ trả về 1 Promise để bạn biết kết quả.
+
+Ví dụ:
+
+```js
+const [listProvince, setListProvince] = useState([])
+useEffect(() => {
+  window.utopWidget.getListProvince().then((res) => setListProvince(res))
+  // [{id: "01", value: "Thành phố Hà Nội", communeId: "00001"}, ...]
+}, [])
 ```
 
 <a name = "IV"></a>

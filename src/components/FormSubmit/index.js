@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react'
-import { Button, Checkbox, Form, Input, message } from 'antd'
+import React, { createContext, useEffect, useMemo, useState } from 'react'
+import { Button, Checkbox, DatePicker, Form, Input, Radio, Select, message } from 'antd'
 import RequestOTP from '../../components/RequestOTP'
 
 import NotifyPopup from '../NotifyPopup'
@@ -13,8 +13,24 @@ export default function FormSubmit() {
   const [startCoutdown, setStartCountdown] = useState()
   const [isModalOpenOTP, setIsModalOpenOTP] = useState(false)
   const [isModalOpenNotify, setIsModalOpenNotify] = useState(false)
+  const listZone = useMemo(() => {
+    const listOrigin = window.utopWidget.getListZone()
+    if (listOrigin) {
+      const newList = listOrigin.map((item) => ({ value: item, label: item }))
+      return newList
+    }
+    return []
+  }, [])
 
   const onFinish = async (values) => {
+    let formatValues = { ...values }
+    if (values.hasOwnProperty('dob')) {
+      const dob = new Date(values.dob)
+      formatValues.dob = `${dob.getDate() > 9 ? dob.getDate() : '0' + dob.getDate()}/${
+        dob.getMonth() + 1 > 9 ? dob.getMonth() + 1 : '0' + (dob.getMonth() + 1)
+      }/${dob.getFullYear()}`
+    }
+
     setLoadingSubmit(true)
     try {
       // const result = await window.utopWidget.requestOTP({
@@ -29,7 +45,7 @@ export default function FormSubmit() {
       //   showModal()
       //   setStartCountdown(new Date().getTime())
       // }
-      const validate = await window.utopWidget.validateFormSubmit(values)
+      const validate = await window.utopWidget.validateFormSubmit(formatValues)
       if (validate) {
         const resExchangeCode = await window.utopWidget.exchangeCode({
           campaignId: masterData.campaignInfo.campaignId,
@@ -80,21 +96,107 @@ export default function FormSubmit() {
     <div className=" d-flex justify-content-center mt-3">
       <Form form={form} className="form-body" name="basic" onFinish={onFinish} autoComplete="off">
         {utopWidget.getFieldsFormSubmit().map((item) => (
-          <Form.Item
-            key={item.attributeName}
-            label={item.labelText}
-            name={item.attributeName}
-            rules={[
-              {
-                required: item.isRequired,
-                message: `Vui lòng nhập ${item.labelText}`,
-              },
-            ]}
-            labelCol={{ span: 5 }}
-            labelAlign="left"
-          >
-            <Input />
-          </Form.Item>
+          <>
+            {(item.attributeName === 'inputLotteryCode' ||
+              item.attributeName === 'phoneNumber' ||
+              item.attributeName === 'name' ||
+              item.attributeName === 'address' ||
+              item.attributeName === 'email') && (
+              <Form.Item
+                key={item.attributeName}
+                label={item.labelText}
+                name={item.attributeName}
+                rules={[
+                  {
+                    required: item.isRequired,
+                    message: `Vui lòng nhập ${item.labelText}`,
+                  },
+                ]}
+                labelCol={{ span: 5 }}
+                labelAlign="left"
+              >
+                <Input
+                  maxLength={
+                    item.attributeName === 'name' || item.attributeName === 'email'
+                      ? 50
+                      : item.attributeName === 'phoneNumber'
+                      ? 10
+                      : item.attributeName === 'address'
+                      ? 100
+                      : null
+                  }
+                />
+              </Form.Item>
+            )}
+            {(item.attributeName === 'zone' || item.attributeName === 'province') && (
+              <Form.Item
+                key={item.attributeName}
+                label={item.labelText}
+                name={item.attributeName}
+                rules={[
+                  {
+                    required: item.isRequired,
+                    message: `Vui lòng nhập ${item.labelText}`,
+                  },
+                ]}
+                labelCol={{ span: 5 }}
+                labelAlign="left"
+              >
+                <Select
+                  mode="tags"
+                  style={{
+                    width: '100%',
+                  }}
+                  options={item.attributeName === 'province' ? [] : listZone}
+                />
+              </Form.Item>
+            )}
+            {item.attributeName === 'dob' && (
+              <Form.Item
+                key={item.attributeName}
+                label={item.labelText}
+                name={item.attributeName}
+                rules={[
+                  {
+                    required: item.isRequired,
+                    message: `Vui lòng nhập ${item.labelText}`,
+                  },
+                ]}
+                labelCol={{ span: 5 }}
+                labelAlign="left"
+              >
+                <DatePicker
+                  style={{
+                    width: '100%',
+                  }}
+                  placeholder=""
+                  showToday={false}
+                  format="DD/MM/YYYY"
+                />
+              </Form.Item>
+            )}
+            {item.attributeName === 'gender' && (
+              <Form.Item
+                key={item.attributeName}
+                label={item.labelText}
+                name={item.attributeName}
+                rules={[
+                  {
+                    required: item.isRequired,
+                    message: `Vui lòng nhập ${item.labelText}`,
+                  },
+                ]}
+                labelCol={{ span: 5 }}
+                labelAlign="left"
+              >
+                <Radio.Group style={{ width: '100%', textAlign: 'left' }}>
+                  <Radio value="M">Nam</Radio>
+                  <Radio value="F">Nữ</Radio>
+                  <Radio value="O">Khác</Radio>
+                </Radio.Group>
+              </Form.Item>
+            )}
+          </>
         ))}
 
         <Form.Item>

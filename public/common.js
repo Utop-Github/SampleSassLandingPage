@@ -252,6 +252,15 @@ window.utopWidget = {
         return err
     }
   },
+  getListZone: function () {
+    window.utopWidget.checkData()
+    const lotteryCodeFields = window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields
+    const fieldZone = lotteryCodeFields.find((field) => field.attributeName === 'zone')
+    if (!!fieldZone) {
+      return fieldZone.listZone
+    }
+    return false
+  },
   // isAnonymousMode: function () {
   //   return new Promise(function detect(resolve) {
   //     var yes = function () {

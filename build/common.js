@@ -252,6 +252,27 @@ window.utopWidget = {
         return err
     }
   },
+  getListZone: function () {
+    window.utopWidget.checkData()
+    const lotteryCodeFields = window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields
+    const fieldZone = lotteryCodeFields.find((field) => field.attributeName === 'zone')
+    if (!!fieldZone) {
+      return fieldZone.listZone
+    }
+    return false
+  },
+  getListProvince: function () {
+    return new Promise((resolve, reject) => {
+      fetch(`${window.utopWidgetConfig.baseUrl}/cppromotion/provinces`, {
+        method: 'GET',
+        headers: {
+          'Ocp-Apim-Subscription-Key': window.utopWidgetConfig.subKey,
+        },
+      })
+        .then((res) => res.json())
+        .then((result) => resolve(result))
+    })
+  },
   // isAnonymousMode: function () {
   //   return new Promise(function detect(resolve) {
   //     var yes = function () {

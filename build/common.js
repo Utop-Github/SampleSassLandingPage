@@ -225,10 +225,9 @@ window.utopWidget = {
       case 'blockuserfailed': {
         return {
           ...err,
-          message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.userBlocked.replaceAll(
-            '@(phonenumber)',
-            err.phoneNumber
-          ),
+          message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.userBlocked
+            .replaceAll('@(phonenumber)', err.phoneNumber)
+            .replaceAll('@(times)', window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.blockedLimit),
         }
       }
       case 'codeisused': {
@@ -292,7 +291,7 @@ window.utopWidget = {
         if (window.masterData.dataStep1.allowedBrowsers.length === 0) resolve(true)
         if (!window?.utopIdentifyInfo) {
           return reject({
-            code: 'IdentifyFail',
+            code: 'IdentifyFailed',
             message: 'Không định danh được trình duyệt!',
           })
         }

@@ -1,0 +1,15 @@
+.loading {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 10px solid #ED6F21;
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+  animation: spinner 1s infinite linear;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}

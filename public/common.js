@@ -190,22 +190,34 @@ window.utopWidget = {
         }
       }
       case 'campaignnotstartyet': {
+        const time = new Date(window.masterData.campaignInfo.startDate)
+        const timeFormat = `${time.getDate() > 9 ? time.getDate() : '0' + time.getDate()}/${
+          time.getMonth() + 1 > 9 ? time.getMonth() + 1 : '0' + (time.getMonth() + 1)
+        }/${time.getFullYear()} ${time.getHours() > 9 ? time.getHours() : '0' + time.getHours()}:${
+          time.getMinutes() > 9 ? time.getMinutes() : '0' + time.getMinutes()
+        }`
         return {
           ...err,
           message:
             window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.afterCampaign.replaceAll(
               '@(startdate)',
-              window.masterData.campaignInfo.startDate
+              timeFormat
             ),
         }
       }
       case 'campaignfinished': {
+        const time = new Date(window.masterData.campaignInfo.endDate)
+        const timeFormat = `${time.getDate() > 9 ? time.getDate() : '0' + time.getDate()}/${
+          time.getMonth() + 1 > 9 ? time.getMonth() + 1 : '0' + (time.getMonth() + 1)
+        }/${time.getFullYear()} ${time.getHours() > 9 ? time.getHours() : '0' + time.getHours()}:${
+          time.getMinutes() > 9 ? time.getMinutes() : '0' + time.getMinutes()
+        }`
         return {
           ...err,
           message:
             window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.campaignEnded.replaceAll(
               '@(enddate)',
-              window.masterData.campaignInfo.endDate
+              timeFormat
             ),
         }
       }
@@ -272,6 +284,34 @@ window.utopWidget = {
         .then((res) => res.json())
         .then((result) => resolve(result))
     })
+  },
+  checkBrowser: function () {
+    return new Promise((resolve, reject) =>
+      setTimeout(() => {
+        // allowed all browser
+        if (window.masterData.dataStep1.allowedBrowsers.length === 0) resolve(true)
+        if (!window?.utopIdentifyInfo) {
+          return reject({
+            code: 'IdentifyFail',
+            message: 'Không định danh được trình duyệt!',
+          })
+        }
+        const identify = window.utopIdentifyInfo
+        const allowedBrowsers = window.masterData.dataStep1.allowedBrowsers
+        const isBlockedAnonymous = window.masterData.dataStep1.isBlockedAnonymous
+        const message = window.masterData.dataStep1.blockingContent.invalidBrowser
+        if (
+          !allowedBrowsers.includes(identify.browser.name) ||
+          (isBlockedAnonymous && identify.browserMode !== 'regular')
+        ) {
+          return reject({
+            code: 'InvalidBrowser',
+            message,
+          })
+        }
+        return resolve(true)
+      }, 500)
+    )
   },
 }
 if (!window?.masterData) {

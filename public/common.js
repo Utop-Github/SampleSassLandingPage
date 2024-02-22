@@ -292,7 +292,7 @@ window.utopWidget = {
         if (window.masterData.dataStep1.allowedBrowsers.length === 0) resolve(true)
         if (!window?.utopIdentifyInfo) {
           return reject({
-            code: 'IdentifyFail',
+            code: 'IdentifyFailed',
             message: 'Không định danh được trình duyệt!',
           })
         }

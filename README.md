@@ -1,31 +1,34 @@
 # CHIẾN DỊCH QUẢNG CÁO
+
 **MỤC LỤC**
 
- [I. Giới thiệu](#i-giới-thiệu)
- 
- [II. Hướng dẫn cài đặt nguồn](#ii-hướng-dẫn-cài-đặt-nguồn)
- 
- [III. Các cú pháp truy xuất](#iii-các-cú-pháp-truy-xuất)
- 
-  - [1. Truy xuất biến](#1-truy-xuất-biến)
-  
-  - [2. Truy xuất hàm](#2-truy-xuất-hàm)
+[I. Giới thiệu](#i-giới-thiệu)
 
-    - [2.1 window.utopWidget.getFieldsFormSubmit()](#21-windowutopwidgetgetfieldsformsubmit)
+[II. Hướng dẫn cài đặt nguồn](#ii-hướng-dẫn-cài-đặt-nguồn)
 
-    - [2.2 window.utopWidget.validateFormSubmit(dataValidate)](#22-windowutopwidgetvalidateformsubmitdatavalidate)
+[III. Các cú pháp truy xuất](#iii-các-cú-pháp-truy-xuất)
 
-    - [2.3 window.utopWidget.getMessageError()](#23-windowutopwidgetgetmessageerrorerr)
+- [1. Truy xuất biến](#1-truy-xuất-biến)
 
-    - [2.4 window.utopWidget.requestOTP({campaignId, bizId, phoneNumber})](#24-windowutopwidgetrequestotpcampaignid-bizid-phonenumber)
+- [2. Truy xuất hàm](#2-truy-xuất-hàm)
 
-    - [2.5 window.utopWidget.exchangeCode({campaignId, bizId, phoneNumber, code, otp?})](#25-windowutopwidgetexchangecodecampaignid-bizid-phonenumber-code-otp)
+  - [2.1 window.utopWidget.getFieldsFormSubmit()](#21-windowutopwidgetgetfieldsformsubmit)
 
-    - [2.6 window.utopWidget.spinGift({campaignId, bizId, phoneNumber, transactionId, timestamp, signature})](#26-windowutopwidgetspingiftcampaignid-bizid-phonenumber-transactionid-timestamp-signature)
+  - [2.2 window.utopWidget.validateFormSubmit(dataValidate)](#22-windowutopwidgetvalidateformsubmitdatavalidate)
 
-    - [2.7 window.utopWidget.getListZone()](#27-windowutopwidgetgetlistzone)
+  - [2.3 window.utopWidget.getMessageError()](#23-windowutopwidgetgetmessageerrorerr)
 
-    - [2.8 window.utopWidget.getListProvince()](#28-windowutopwidgetgetlistprovince)
+  - [2.4 window.utopWidget.requestOTP({campaignId, bizId, phoneNumber})](#24-windowutopwidgetrequestotpcampaignid-bizid-phonenumber)
+
+  - [2.5 window.utopWidget.exchangeCode({campaignId, bizId, phoneNumber, code, otp?})](#25-windowutopwidgetexchangecodecampaignid-bizid-phonenumber-code-otp)
+
+  - [2.6 window.utopWidget.spinGift({campaignId, bizId, phoneNumber, transactionId, timestamp, signature})](#26-windowutopwidgetspingiftcampaignid-bizid-phonenumber-transactionid-timestamp-signature)
+
+  - [2.7 window.utopWidget.getListZone()](#27-windowutopwidgetgetlistzone)
+
+  - [2.8 window.utopWidget.getListProvince()](#28-windowutopwidgetgetlistprovince)
+
+  - [2.9 window.utopWidget.checkBrowser()](#29-windowutopwidgetcheckbrowser)
 
 [IV. Danh sách mã lỗi](#iv-danh-sách-mã-lỗi)
 
@@ -54,6 +57,8 @@ Bạn có thể clone repo hoặc download file ‘SampleSassLandingPage.zip’ 
 
 1. Sau 5 bước cài đặt ở trên, hãy chạy lệnh `npm run build` hoặc `yarn build`.
 2. Khi có thư mục build, nén tất cả file có trong thư mục build ra 1 file zip.
+   _**Lưu ý:** UEngage chỉ hỗ trợ các file trong thư mục có định dạng đuôi là: **html, css, scss, js, ts, json, lock, png, jpg, jpeg, gif, webp, ico, ttf ,wolf, wolf2, eot.**_
+   Vui lòng xoá những file có định dạng không được hỗ trợ. Nếu không, khi upload lên UEngage, UEngage sẽ thông báo lỗi và không ghi nhận.
 3. Cuối cùng tại bước 3 trên UEngage, hãy chọn và upload file zip này, UEngage sẽ tiến hành CI/CD website theo file bạn đã upload.
 4. UEngage sẽ render website và có thể xem trước bằng việc chọn nút ‘Xem trước trang’ dưới file vừa upload
 
@@ -77,8 +82,8 @@ Thông tin được UEngage cung cấp bao gồm: `campaignId`, `campaignName`, 
 Ví dụ:
 
 ```js
-const campaignId = window.masterData.campaignInfo.campaignId;
-console.log(campaignId); //75a9dee0-ee68-4562-aeba-0b76bb9c4857
+const campaignId = window.masterData.campaignInfo.campaignId
+console.log(campaignId) //75a9dee0-ee68-4562-aeba-0b76bb9c4857
 ```
 
 <a name = "III-2"></a>
@@ -118,8 +123,8 @@ trị là mảng danh sách các zone bạn đã config trên portal_
 Ví dụ:
 
 ```js
-const listFields = window.utopWidget.getFieldsFormSubmit();
-console.log(listFields);
+const listFields = window.utopWidget.getFieldsFormSubmit()
+console.log(listFields)
 // [
 //     {attributeName: "inputLotteryCode", labelText: "Mã dự thưởng", isRequired: true},
 //     {attributeName: "phoneNumber", labelText: "Số điện thoại", isRequired: true},
@@ -150,27 +155,27 @@ Nếu validate thành công thì result bạn nhận đc sẽ là **`true`**
 Ví dụ 1:
 
 ```js
-const dataValidate = { inputLotteryCode: "", phoneNumber: "0123456789" };
-const validate = validateFormSubmit(dataValidate);
-console.log(validate);
+const dataValidate = { inputLotteryCode: '', phoneNumber: '0123456789' }
+const validate = validateFormSubmit(dataValidate)
+console.log(validate)
 // {code: “InvalidRequired”, message: “Field phoneNumber is required”}
 ```
 
 Ví dụ 2:
 
 ```js
-const dataValidate = { inputLotteryCode: "BJWQJ21312", phoneNumber: "ahihi" };
-const validate = validateFormSubmit(dataValidate);
-console.log(validate);
+const dataValidate = { inputLotteryCode: 'BJWQJ21312', phoneNumber: 'ahihi' }
+const validate = validateFormSubmit(dataValidate)
+console.log(validate)
 // {code: “InvalidPhoneNumber”, message: “Invalid field phoneNumber - phoneNumber must be 9-10 digits”}
 ```
 
 Ví dụ 3:
 
 ```js
-const dataValidate = { inputLotteryCode: "BJWQJ21312", phoneNumber: "0123456789" };
-const validate = validateFormSubmit(dataValidate);
-console.log(validate);
+const dataValidate = { inputLotteryCode: 'BJWQJ21312', phoneNumber: '0123456789' }
+const validate = validateFormSubmit(dataValidate)
+console.log(validate)
 // true
 ```
 
@@ -193,14 +198,14 @@ Ví dụ 1:
 ```js
 try {
   const response = await window.utopWidget.exchangeCode({
-    campaignId: "campaign123",
-    bizId: "bizid123",
-    code: "submitcode",
-    phoneNumber: "012345678",
-  });
+    campaignId: 'campaign123',
+    bizId: 'bizid123',
+    code: 'submitcode',
+    phoneNumber: '012345678',
+  })
 } catch (err) {
-  const error = window.utopWidget.getMessageError(err);
-  console.log(error); // {code: "CampaignIsNotFound", message: "Không tìm thấy chiến dịch, vui lòng kiểm tra lại!"}
+  const error = window.utopWidget.getMessageError(err)
+  console.log(error) // {code: "CampaignIsNotFound", message: "Không tìm thấy chiến dịch, vui lòng kiểm tra lại!"}
 }
 ```
 
@@ -211,12 +216,12 @@ try {
   const response = await window.utopWidget.exchangeCode({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    code: "BPOMP7CZ7B",
-    phoneNumber: "012345678",
-  });
+    code: 'BPOMP7CZ7B',
+    phoneNumber: '012345678',
+  })
 } catch (err) {
-  const error = window.utopWidget.getMessageError(err);
-  console.log(error); // {code: "CodeIsUsed", message: "Mã số BPOMP7CZ7B không hợp lệ hoặc đã được sử dụng. Quý khách vui lòng thử lại. Liên hệ tổng đài (1,000đ/phút) để được hỗ trợ và tư vấn."}
+  const error = window.utopWidget.getMessageError(err)
+  console.log(error) // {code: "CodeIsUsed", message: "Mã số BPOMP7CZ7B không hợp lệ hoặc đã được sử dụng. Quý khách vui lòng thử lại. Liên hệ tổng đài (1,000đ/phút) để được hỗ trợ và tư vấn."}
 }
 ```
 
@@ -237,9 +242,9 @@ try {
   const response = await window.utopWidget.requestOTP({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    phoneNumber: "012345678",
-  });
-  console.log(response); // false
+    phoneNumber: '012345678',
+  })
+  console.log(response) // false
 } catch (err) {
   // handle error here
 }
@@ -280,10 +285,10 @@ try {
   const response = await window.utopWidget.exchangeCode({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    code: "BPOMP7CZ7B",
-    phoneNumber: "0123456789",
-  });
-  console.log(response);
+    code: 'BPOMP7CZ7B',
+    phoneNumber: '0123456789',
+  })
+  console.log(response)
   // {
   //     "bizId": "3faa1971-45f8-41d9-901e-699bb3f41d7e",
   //     "campaignId": "75a9dee0-ee68-4562-aeba-0b76bb9c4857",
@@ -306,11 +311,11 @@ try {
   const response = await window.utopWidget.exchangeCode({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    code: "BPOMP7CZ7B",
-    phoneNumber: "0123456789",
-    otp: "123456",
-  });
-  console.log(response);
+    code: 'BPOMP7CZ7B',
+    phoneNumber: '0123456789',
+    otp: '123456',
+  })
+  console.log(response)
 } catch (err) {
   // err: {code: 'InvalidOtp', message: 'OTP không hợp lệ'}
   // handle error here
@@ -360,10 +365,10 @@ try {
   const resExchangeCode = await window.utopWidget.exchangeCode({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    code: "BPOMP7CZ7B",
-    phoneNumber: "0123456789",
-  });
-  console.log(resExchangeCode);
+    code: 'BPOMP7CZ7B',
+    phoneNumber: '0123456789',
+  })
+  console.log(resExchangeCode)
   // {
   //     "bizId": "3faa1971-45f8-41d9-901e-699bb3f41d7e",
   //     "campaignId": "75a9dee0-ee68-4562-aeba-0b76bb9c4857",
@@ -377,12 +382,12 @@ try {
   const resSpinGift = await window.utopWidget.spinGift({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    phoneNumber: "0123456789",
+    phoneNumber: '0123456789',
     transactionId: resExchangeCode.transactionId,
     timestamp: resExchangeCode.timestamp,
     signature: resExchangeCode.signature,
-  });
-  console.log(resSpinGift);
+  })
+  console.log(resSpinGift)
   // {
   //     code: "AchieveGift",
   //     message: "Chúc mừng Quý khách trúng thưởng giải tessss. Liên hệ tổng đài (1,000đ/phút) để được hỗ trợ",
@@ -397,13 +402,13 @@ try {
 #### 2.7 window.utopWidget.getListZone()
 
 UEngage cung cấp hàm để lấy danh sách khu vực mà bạn đã thiết lập tại widget “Submit Lottery Code Form” trong tab ‘Field’.
-Hàm sẽ trả về **`false`** nếu bạn không thiết lập trường này 
+Hàm sẽ trả về **`false`** nếu bạn không thiết lập trường này
 
 Ví dụ:
 
 ```js
-const listZone = window.utopWidget.getListZone();
-console.log(listZone); // ["Hồ Chí Minh", "Cần Thơ"]
+const listZone = window.utopWidget.getListZone()
+console.log(listZone) // ["Hồ Chí Minh", "Cần Thơ"]
 ```
 
 <a name = "III-2-8"></a>
@@ -419,6 +424,47 @@ const [listProvince, setListProvince] = useState([])
 useEffect(() => {
   window.utopWidget.getListProvince().then((res) => setListProvince(res))
   // [{id: "01", value: "Thành phố Hà Nội", communeId: "00001"}, ...]
+}, [])
+```
+
+<a name = "III-2-9"></a>
+
+#### 2.9 window.utopWidget.checkBrowser()
+
+UEngage cung cấp hàm để kiểm tra trình duyệt có hợp lệ hay không dựa theo những thiết lập của bạn. Hàm sẽ trả về 1 Promise và bạn có thể sử dụng `then-catch` hoặc `try-catch` để nhận kết quả.
+
+Nếu hàm validate lỗi sẽ reject 1 Object với format:
+
+```js
+{
+  code: "Mã lỗi",
+  message: "Message mặc định theo UEngage"
+}
+```
+
+Danh sách mã lỗi vui lòng tham khảo mục **_[IV.](#iv-danh-sách-mã-lỗi)_** bên dưới.
+Nếu kiểm tra thành công thì result bạn nhận đc sẽ là **`true`**
+
+_**Lưu ý**: Nên gọi hàm ở thư mục cấp cao nhất (App)_
+
+Ví dụ:
+
+```js
+const navigate = useNavigate()
+const [isChecked, setIsChecked] = useState(true)
+async function checkBrowser() {
+  try {
+    await window.utopWidget.checkBrowser()
+    setIsChecked(false)
+  } catch (err) {
+    // Handle err here
+    setIsChecked(false)
+    navigate('/404')
+    alert(err.message)
+  }
+}
+useEffect(() => {
+  checkBrowser()
 }, [])
 ```
 
@@ -456,5 +502,7 @@ Khi sử dụng bất kì hàm được mô tả tại mục **_[III.](#iii-các
 | InvalidName               | name chỉ nhận text và khoảng trắng                                                          | validateFormSubmit() |
 | InvalidDob                | dob chỉ nhận pattern: dd/mm/yyyy \| dd/mm/yy \| dd-mm-yyyy \| dd-mm-yy                      | validateFormSubmit() |
 | NotFoundSubmitBtn         | Không tìm thấy id tương ứng của button submit                                               | exchangeCode()       |
+| IdentifyFailed            | Không định danh được trình duyệt                                                            | checkBrowser()       |
+| InvalidBrowser            | Trình duyệt không hợp lệ theo thiết lập của bạn trên UEngage                                | checkBrowser()       |
 
 _© 2023 - Bản quyền thuộc Utop JSC - Thành viên FPT_

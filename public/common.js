@@ -225,10 +225,9 @@ window.utopWidget = {
       case 'blockuserfailed': {
         return {
           ...err,
-          message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.userBlocked.replaceAll(
-            '@(phonenumber)',
-            err.phoneNumber
-          ),
+          message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.userBlocked
+            .replaceAll('@(phonenumber)', err.phoneNumber)
+            .replaceAll('@(times)', window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.blockedLimit),
         }
       }
       case 'codeisused': {

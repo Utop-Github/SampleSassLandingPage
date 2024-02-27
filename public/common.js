@@ -252,16 +252,19 @@ window.utopWidget = {
           ),
         }
       }
+      // case 'dailysubmissionexceeded':
+      // case 'weeklysubmissionexceeded':
+      // case 'monthlysubmissionexceeded':
+      // case 'submissionexceeded': {
+      //   return {
+      //     ...err,
+      //     message: window.masterData.dataStep1.blockingContent.exceedLimit,
+      //   }
+      // }
       case 'dailysubmissionexceeded':
       case 'weeklysubmissionexceeded':
       case 'monthlysubmissionexceeded':
-      case 'submissionexceeded': {
-        return {
-          ...err,
-          message: window.masterData.dataStep1.blockingContent.exceedLimit,
-        }
-      }
-
+      case 'submissionexceeded':
       case 'quota_exceeded': {
         if (window.masterData.dataStep2.nodes.length !== 2)
           return {

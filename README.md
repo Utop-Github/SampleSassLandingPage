@@ -1,6 +1,6 @@
 # CHIẾN DỊCH QUẢNG CÁO
 
-**MỤC LỤC**
+## MỤC LỤC
 
 [I. Giới thiệu](#i-giới-thiệu)
 
@@ -495,6 +495,12 @@ Khi sử dụng bất kì hàm được mô tả tại mục **_[III.](#iii-các
 | SubmissionExceeded        | Giới hạn phát quà trong chiến dịch                                                          | API                  |
 | CodeIsUsed                | Mã dự thưởng đã sử dụng                                                                     | API                  |
 | CodeIsNotFound            | Không tìm thấy mã dự thưởng                                                                 | API                  |
+| DuplicateTransaction      | Phiên quay thưởng bị trùng lặp                                                              | API                  |
+| OutOfCampaignTime         | Chiến dịch đã kết thúc                                                                      | API                  |
+| GiftIsNotSet              | Quà chưa được thiết lập cấp phát                                                            | API                  |
+| GiftListIsEmpty           | Danh sách quà rỗng                                                                          | API                  |
+| QUOTA_EXCEEDED            | Đã đạt giới hạn nhận quà                                                                    | API                  |
+| OutOfStock                | Kho quà đã hết quà                                                                          | API                  |
 | InvalidLength             | Form bạn gửi validate có độ dài không khớp với config field mà bạn đã thiết lập trên portal | validateFormSubmit() |
 | InvalidField              | Form bạn gửi chứa key không khớp với attributeName mà UEngage đã quy định                   | validateFormSubmit() |
 | InvalidRequired           | Config mà bạn thiếp lập có required nhưng giá trị bạn mapping vào field lại không có        | validateFormSubmit() |

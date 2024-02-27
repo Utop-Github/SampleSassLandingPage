@@ -243,7 +243,6 @@ window.utopWidget = {
       case 'invalidcode':
       case 'holdcodefailure':
       case 'codeisnotfound':
-      case 'giftisnotset':
       case 'giftlistisempty': {
         return {
           ...err,
@@ -274,6 +273,7 @@ window.utopWidget = {
           message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.participationLimit,
         }
       }
+      case 'giftisnotset':
       case 'outofstock': {
         if (window.masterData.dataStep2.nodes.length !== 2)
           return {

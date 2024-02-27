@@ -326,11 +326,11 @@ window.utopWidget = {
         }
         const identify = window.utopIdentifyInfo
         const allowedBrowsers = window.masterData.dataStep1.allowedBrowsers
-        const isBlockedAnonymous = window.masterData.dataStep1.isBlockedAnonymous
+        const isAllowedIncognito = window.masterData.dataStep1.isAllowedIncognito
         const message = window.masterData.dataStep1.blockingContent.invalidBrowser
         if (
           !allowedBrowsers.includes(identify.browser.name) ||
-          (isBlockedAnonymous && identify.browserMode !== 'regular')
+          (isAllowedIncognito && identify.browserMode !== 'regular')
         ) {
           return reject({
             code: 'InvalidBrowser',

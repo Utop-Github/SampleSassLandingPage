@@ -162,14 +162,14 @@ window.utopWidget = {
   },
   getMessageError: function (err) {
     switch (err?.code.toLowerCase()) {
-      case 'missingrequiredfield':
-      case 'createtransactionfail':
-      case 'addattemptfailed': {
-        return {
-          ...err,
-          message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
-        }
-      }
+      // case 'missingrequiredfield':
+      // case 'createtransactionfail':
+      // case 'addattemptfailed': {
+      //   return {
+      //     ...err,
+      //     message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
+      //   }
+      // }
       case 'campaignisnotfound':
       case 'campaignisnotpublished': {
         return {
@@ -205,7 +205,8 @@ window.utopWidget = {
             ),
         }
       }
-      case 'campaignfinished': {
+      case 'campaignfinished':
+      case 'outofcampaigntime': {
         const time = new Date(window.masterData.campaignInfo.endDate)
         const timeFormat = `${time.getDate() > 9 ? time.getDate() : '0' + time.getDate()}/${
           time.getMonth() + 1 > 9 ? time.getMonth() + 1 : '0' + (time.getMonth() + 1)
@@ -241,7 +242,9 @@ window.utopWidget = {
       }
       case 'invalidcode':
       case 'holdcodefailure':
-      case 'codeisnotfound': {
+      case 'codeisnotfound':
+      case 'giftisnotset':
+      case 'giftlistisempty': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.invalidCode.replaceAll(
@@ -259,8 +262,34 @@ window.utopWidget = {
           message: window.masterData.dataStep1.blockingContent.exceedLimit,
         }
       }
+
+      case 'quota_exceeded': {
+        if (window.masterData.dataStep2.nodes.length !== 2)
+          return {
+            ...err,
+            message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
+          }
+        return {
+          ...err,
+          message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.participationLimit,
+        }
+      }
+      case 'outofstock': {
+        if (window.masterData.dataStep2.nodes.length !== 2)
+          return {
+            ...err,
+            message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
+          }
+        return {
+          ...err,
+          message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.giftOutOfStock,
+        }
+      }
       default:
-        return err
+        return {
+          ...err,
+          message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
+        }
     }
   },
   getListZone: function () {

@@ -231,7 +231,8 @@ window.utopWidget = {
             .replaceAll('@(times)', window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.blockedLimit),
         }
       }
-      case 'codeisused': {
+      case 'codeisused':
+      case 'code_used': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeUsed.replaceAll(
@@ -243,7 +244,8 @@ window.utopWidget = {
       case 'invalidcode':
       case 'holdcodefailure':
       case 'codeisnotfound':
-      case 'giftlistisempty': {
+      case 'giftlistisempty':
+      case 'code_not_found': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.invalidCode.replaceAll(
@@ -286,6 +288,13 @@ window.utopWidget = {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.giftOutOfStock,
+        }
+      }
+      case 'status_not_support':
+      case 'collection_is_temporarily_locked': {
+        return {
+          ...err,
+          message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeCanceled,
         }
       }
       default:

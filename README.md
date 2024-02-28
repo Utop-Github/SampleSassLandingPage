@@ -75,15 +75,15 @@ Sau các bước cài đặt, bạn sẽ cần hiểu và sử dụng các biế
 Để truy xuất các biến ứng với thông tin chiến dịch của bạn thì sử dụng cú pháp:
 
 ```js
-window.masterData.campaignInfo
+window.masterData.campaignInfo;
 ```
 
 Thông tin được UEngage cung cấp bao gồm: `campaignId`, `campaignName`, `bizId`, `appId`, `startDate`, `endDate`
 Ví dụ:
 
 ```js
-const campaignId = window.masterData.campaignInfo.campaignId
-console.log(campaignId) //75a9dee0-ee68-4562-aeba-0b76bb9c4857
+const campaignId = window.masterData.campaignInfo.campaignId;
+console.log(campaignId); //75a9dee0-ee68-4562-aeba-0b76bb9c4857
 ```
 
 <a name = "III-2"></a>
@@ -93,7 +93,7 @@ console.log(campaignId) //75a9dee0-ee68-4562-aeba-0b76bb9c4857
 Sau khi copy và paste đoạn mã config theo hướng dẫn ở mục **_[II](#ii-hướng-dẫn-cài-đặt-nguồn)_** vào nguồn của bạn, thì trong bất kỳ file .js nào, bạn chỉ cần sử dụng theo cú pháp:
 
 ```js
-window.utopWidget
+window.utopWidget;
 ```
 
 Dưới đây là danh sách các hàm mà UEngage cung cấp cho bạn
@@ -123,8 +123,8 @@ trị là mảng danh sách các zone bạn đã config trên portal_
 Ví dụ:
 
 ```js
-const listFields = window.utopWidget.getFieldsFormSubmit()
-console.log(listFields)
+const listFields = window.utopWidget.getFieldsFormSubmit();
+console.log(listFields);
 // [
 //     {attributeName: "inputLotteryCode", labelText: "Mã dự thưởng", isRequired: true},
 //     {attributeName: "phoneNumber", labelText: "Số điện thoại", isRequired: true},
@@ -155,27 +155,30 @@ Nếu validate thành công thì result bạn nhận đc sẽ là **`true`**
 Ví dụ 1:
 
 ```js
-const dataValidate = { inputLotteryCode: '', phoneNumber: '0123456789' }
-const validate = validateFormSubmit(dataValidate)
-console.log(validate)
+const dataValidate = { inputLotteryCode: "", phoneNumber: "0123456789" };
+const validate = validateFormSubmit(dataValidate);
+console.log(validate);
 // {code: “InvalidRequired”, message: “Field phoneNumber is required”}
 ```
 
 Ví dụ 2:
 
 ```js
-const dataValidate = { inputLotteryCode: 'BJWQJ21312', phoneNumber: 'ahihi' }
-const validate = validateFormSubmit(dataValidate)
-console.log(validate)
+const dataValidate = { inputLotteryCode: "BJWQJ21312", phoneNumber: "ahihi" };
+const validate = validateFormSubmit(dataValidate);
+console.log(validate);
 // {code: “InvalidPhoneNumber”, message: “Invalid field phoneNumber - phoneNumber must be 9-10 digits”}
 ```
 
 Ví dụ 3:
 
 ```js
-const dataValidate = { inputLotteryCode: 'BJWQJ21312', phoneNumber: '0123456789' }
-const validate = validateFormSubmit(dataValidate)
-console.log(validate)
+const dataValidate = {
+  inputLotteryCode: "BJWQJ21312",
+  phoneNumber: "0123456789",
+};
+const validate = validateFormSubmit(dataValidate);
+console.log(validate);
 // true
 ```
 
@@ -198,14 +201,14 @@ Ví dụ 1:
 ```js
 try {
   const response = await window.utopWidget.exchangeCode({
-    campaignId: 'campaign123',
-    bizId: 'bizid123',
-    code: 'submitcode',
-    phoneNumber: '012345678',
-  })
+    campaignId: "campaign123",
+    bizId: "bizid123",
+    code: "submitcode",
+    phoneNumber: "012345678",
+  });
 } catch (err) {
-  const error = window.utopWidget.getMessageError(err)
-  console.log(error) // {code: "CampaignIsNotFound", message: "Không tìm thấy chiến dịch, vui lòng kiểm tra lại!"}
+  const error = window.utopWidget.getMessageError(err);
+  console.log(error); // {code: "CampaignIsNotFound", message: "Không tìm thấy chiến dịch, vui lòng kiểm tra lại!"}
 }
 ```
 
@@ -216,12 +219,12 @@ try {
   const response = await window.utopWidget.exchangeCode({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    code: 'BPOMP7CZ7B',
-    phoneNumber: '012345678',
-  })
+    code: "BPOMP7CZ7B",
+    phoneNumber: "012345678",
+  });
 } catch (err) {
-  const error = window.utopWidget.getMessageError(err)
-  console.log(error) // {code: "CodeIsUsed", message: "Mã số BPOMP7CZ7B không hợp lệ hoặc đã được sử dụng. Quý khách vui lòng thử lại. Liên hệ tổng đài (1,000đ/phút) để được hỗ trợ và tư vấn."}
+  const error = window.utopWidget.getMessageError(err);
+  console.log(error); // {code: "CodeIsUsed", message: "Mã số BPOMP7CZ7B không hợp lệ hoặc đã được sử dụng. Quý khách vui lòng thử lại. Liên hệ tổng đài (1,000đ/phút) để được hỗ trợ và tư vấn."}
 }
 ```
 
@@ -242,9 +245,9 @@ try {
   const response = await window.utopWidget.requestOTP({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    phoneNumber: '012345678',
-  })
-  console.log(response) // false
+    phoneNumber: "012345678",
+  });
+  console.log(response); // false
 } catch (err) {
   // handle error here
 }
@@ -285,10 +288,10 @@ try {
   const response = await window.utopWidget.exchangeCode({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    code: 'BPOMP7CZ7B',
-    phoneNumber: '0123456789',
-  })
-  console.log(response)
+    code: "BPOMP7CZ7B",
+    phoneNumber: "0123456789",
+  });
+  console.log(response);
   // {
   //     "bizId": "3faa1971-45f8-41d9-901e-699bb3f41d7e",
   //     "campaignId": "75a9dee0-ee68-4562-aeba-0b76bb9c4857",
@@ -311,11 +314,11 @@ try {
   const response = await window.utopWidget.exchangeCode({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    code: 'BPOMP7CZ7B',
-    phoneNumber: '0123456789',
-    otp: '123456',
-  })
-  console.log(response)
+    code: "BPOMP7CZ7B",
+    phoneNumber: "0123456789",
+    otp: "123456",
+  });
+  console.log(response);
 } catch (err) {
   // err: {code: 'InvalidOtp', message: 'OTP không hợp lệ'}
   // handle error here
@@ -365,10 +368,10 @@ try {
   const resExchangeCode = await window.utopWidget.exchangeCode({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    code: 'BPOMP7CZ7B',
-    phoneNumber: '0123456789',
-  })
-  console.log(resExchangeCode)
+    code: "BPOMP7CZ7B",
+    phoneNumber: "0123456789",
+  });
+  console.log(resExchangeCode);
   // {
   //     "bizId": "3faa1971-45f8-41d9-901e-699bb3f41d7e",
   //     "campaignId": "75a9dee0-ee68-4562-aeba-0b76bb9c4857",
@@ -382,12 +385,12 @@ try {
   const resSpinGift = await window.utopWidget.spinGift({
     campaignId: window.masterData.campaignInfo.campaignId,
     bizId: window.masterData.campaignInfo.bizId,
-    phoneNumber: '0123456789',
+    phoneNumber: "0123456789",
     transactionId: resExchangeCode.transactionId,
     timestamp: resExchangeCode.timestamp,
     signature: resExchangeCode.signature,
-  })
-  console.log(resSpinGift)
+  });
+  console.log(resSpinGift);
   // {
   //     code: "AchieveGift",
   //     message: "Chúc mừng Quý khách trúng thưởng giải tessss. Liên hệ tổng đài (1,000đ/phút) để được hỗ trợ",
@@ -407,8 +410,8 @@ Hàm sẽ trả về **`false`** nếu bạn không thiết lập trường này
 Ví dụ:
 
 ```js
-const listZone = window.utopWidget.getListZone()
-console.log(listZone) // ["Hồ Chí Minh", "Cần Thơ"]
+const listZone = window.utopWidget.getListZone();
+console.log(listZone); // ["Hồ Chí Minh", "Cần Thơ"]
 ```
 
 <a name = "III-2-8"></a>
@@ -420,11 +423,11 @@ UEngage cung cấp hàm để lấy danh sách tên 63 tỉnh thành Việt Nam.
 Ví dụ:
 
 ```js
-const [listProvince, setListProvince] = useState([])
+const [listProvince, setListProvince] = useState([]);
 useEffect(() => {
-  window.utopWidget.getListProvince().then((res) => setListProvince(res))
+  window.utopWidget.getListProvince().then((res) => setListProvince(res));
   // [{id: "01", value: "Thành phố Hà Nội", communeId: "00001"}, ...]
-}, [])
+}, []);
 ```
 
 <a name = "III-2-9"></a>
@@ -450,22 +453,22 @@ _**Lưu ý**: Nên gọi hàm ở thư mục cấp cao nhất (App)_
 Ví dụ:
 
 ```js
-const navigate = useNavigate()
-const [isChecked, setIsChecked] = useState(true)
+const navigate = useNavigate();
+const [isChecked, setIsChecked] = useState(true);
 async function checkBrowser() {
   try {
-    await window.utopWidget.checkBrowser()
-    setIsChecked(false)
+    await window.utopWidget.checkBrowser();
+    setIsChecked(false);
   } catch (err) {
     // Handle err here
-    setIsChecked(false)
-    navigate('/404')
-    alert(err.message)
+    setIsChecked(false);
+    navigate("/404");
+    alert(err.message);
   }
 }
 useEffect(() => {
-  checkBrowser()
-}, [])
+  checkBrowser();
+}, []);
 ```
 
 <a name = "IV"></a>
@@ -481,34 +484,39 @@ Khi sử dụng bất kì hàm được mô tả tại mục **_[III.](#iii-các
 }
 ```
 
-| **Mã Lỗi**                | **Chú thích**                                                                               | **Ghi chú**          |
-| :------------------------ | :------------------------------------------------------------------------------------------ | :------------------- |
-| InvalidOtp                | OTP không hợp lệ                                                                            | API                  |
-| CampaignIsNotPublished    | Chiến dịch chưa xuất bản                                                                    | API                  |
-| CampaignIsNotFound        | Không tìm thấy chiến dịch                                                                   | API                  |
-| CampaignNotStartYet       | Chiến dịch chưa bắt đầu                                                                     | API                  |
-| CampaignFinished          | Chiến dịch đã kết thúc                                                                      | API                  |
-| UserIsBlocked             | Người dùng bị chặn                                                                          | API                  |
-| DailySubmissionExceed     | Giới hạn phát quà ngày                                                                      | API                  |
-| WeeklySubmissionExceeded  | Giới hạn phát quà tuần                                                                      | API                  |
-| MonthlySubmissionExceeded | Giới hạn phát quà tháng                                                                     | API                  |
-| SubmissionExceeded        | Giới hạn phát quà trong chiến dịch                                                          | API                  |
-| CodeIsUsed                | Mã dự thưởng đã sử dụng                                                                     | API                  |
-| CodeIsNotFound            | Không tìm thấy mã dự thưởng                                                                 | API                  |
-| DuplicateTransaction      | Phiên quay thưởng bị trùng lặp                                                              | API                  |
-| OutOfCampaignTime         | Chiến dịch đã kết thúc                                                                      | API                  |
-| GiftListIsEmpty           | Danh sách quà rỗng                                                                          | API                  |
-| QUOTA_EXCEEDED            | Đã đạt giới hạn nhận quà                                                                    | API                  |
-| GiftIsNotSet              | Kho quà đã hết                                                                              | API                  |
-| OutOfStock                | Kho quà đã hết                                                                              | API                  |
-| InvalidLength             | Form bạn gửi validate có độ dài không khớp với config field mà bạn đã thiết lập trên portal | validateFormSubmit() |
-| InvalidField              | Form bạn gửi chứa key không khớp với attributeName mà UEngage đã quy định                   | validateFormSubmit() |
-| InvalidRequired           | Config mà bạn thiếp lập có required nhưng giá trị bạn mapping vào field lại không có        | validateFormSubmit() |
-| InvalidPhoneNumber        | phoneNumber chỉ hỗ trợ số Việt Nam từ 9-10 số                                               | validateFormSubmit() |
-| InvalidName               | name chỉ nhận text và khoảng trắng                                                          | validateFormSubmit() |
-| InvalidDob                | dob chỉ nhận pattern: dd/mm/yyyy \| dd/mm/yy \| dd-mm-yyyy \| dd-mm-yy                      | validateFormSubmit() |
-| NotFoundSubmitBtn         | Không tìm thấy id tương ứng của button submit                                               | exchangeCode()       |
-| IdentifyFailed            | Không định danh được trình duyệt                                                            | checkBrowser()       |
-| InvalidBrowser            | Trình duyệt không hợp lệ theo thiết lập của bạn trên UEngage                                | checkBrowser()       |
+| **Mã Lỗi**                       | **Chú thích**                                                                               | **Ghi chú**          |
+| :------------------------------- | :------------------------------------------------------------------------------------------ | :------------------- |
+| InvalidOtp                       | OTP không hợp lệ                                                                            | API                  |
+| CampaignIsNotPublished           | Chiến dịch chưa xuất bản                                                                    | API                  |
+| CampaignIsNotFound               | Không tìm thấy chiến dịch                                                                   | API                  |
+| CampaignNotStartYet              | Chiến dịch chưa bắt đầu                                                                     | API                  |
+| CampaignFinished                 | Chiến dịch đã kết thúc                                                                      | API                  |
+| UserIsBlocked                    | Người dùng bị chặn                                                                          | API                  |
+| DailySubmissionExceed            | Giới hạn phát quà ngày                                                                      | API                  |
+| WeeklySubmissionExceeded         | Giới hạn phát quà tuần                                                                      | API                  |
+| MonthlySubmissionExceeded        | Giới hạn phát quà tháng                                                                     | API                  |
+| SubmissionExceeded               | Giới hạn phát quà trong chiến dịch                                                          | API                  |
+| CodeIsUsed                       | Mã dự thưởng đã sử dụng                                                                     | API                  |
+| CodeIsNotFound                   | Không tìm thấy mã dự thưởng                                                                 | API                  |
+| DuplicateTransaction             | Phiên quay thưởng bị trùng lặp                                                              | API                  |
+| OutOfCampaignTime                | Chiến dịch đã kết thúc                                                                      | API                  |
+| GiftListIsEmpty                  | Danh sách quà rỗng                                                                          | API                  |
+| GiftIsNotSet                     | Kho quà đã hết                                                                              | API                  |
+| OutOfStock                       | Kho quà đã hết                                                                              | API                  |
+| QUOTA_EXCEEDED                   | Đã đạt giới hạn nhận quà                                                                    | API                  |
+| COLLECTION_NOT_FOUND             | Không tìm thấy bộ mã dự thưởng                                                              | API                  |
+| STATUS_NOT_SUPPORT               | Trạng thái của bộ mã dự thưởng không được hỗ trợ                                            | API                  |
+| COLLECTION_IS_TEMPORARILY_LOCKED | Bộ mã dự thưởng đang bị khóa (block tạm thời)                                               | API                  |
+| CODE_USED                        | Mã dự thưởng đã sử dụng                                                                     | API                  |
+| CODE_NOT_FOUND                   | Không tìm thấy mã dự thưởng                                                                 | API                  |
+| InvalidLength                    | Form bạn gửi validate có độ dài không khớp với config field mà bạn đã thiết lập trên portal | validateFormSubmit() |
+| InvalidField                     | Form bạn gửi chứa key không khớp với attributeName mà UEngage đã quy định                   | validateFormSubmit() |
+| InvalidRequired                  | Config mà bạn thiếp lập có required nhưng giá trị bạn mapping vào field lại không có        | validateFormSubmit() |
+| InvalidPhoneNumber               | phoneNumber chỉ hỗ trợ số Việt Nam từ 9-10 số                                               | validateFormSubmit() |
+| InvalidName                      | name chỉ nhận text và khoảng trắng                                                          | validateFormSubmit() |
+| InvalidDob                       | dob chỉ nhận pattern: dd/mm/yyyy \| dd/mm/yy \| dd-mm-yyyy \| dd-mm-yy                      | validateFormSubmit() |
+| NotFoundSubmitBtn                | Không tìm thấy id tương ứng của button submit                                               | exchangeCode()       |
+| IdentifyFailed                   | Không định danh được trình duyệt                                                            | checkBrowser()       |
+| InvalidBrowser                   | Trình duyệt không hợp lệ theo thiết lập của bạn trên UEngage                                | checkBrowser()       |
 
 _© 2023 - Bản quyền thuộc Utop JSC - Thành viên FPT_

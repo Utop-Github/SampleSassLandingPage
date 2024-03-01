@@ -266,8 +266,7 @@ window.utopWidget = {
       case 'dailysubmissionexceeded':
       case 'weeklysubmissionexceeded':
       case 'monthlysubmissionexceeded':
-      case 'submissionexceeded':
-      case 'quota_exceeded': {
+      case 'submissionexceeded': {
         if (window.masterData.dataStep2.nodes.length !== 2)
           return {
             ...err,
@@ -276,6 +275,17 @@ window.utopWidget = {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.participationLimit,
+        }
+      }
+      case 'quota_exceeded': {
+        if (window.masterData.dataStep2.nodes.length !== 2)
+          return {
+            ...err,
+            message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
+          }
+        return {
+          ...err,
+          message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.giftReceptionLimit,
         }
       }
       case 'giftisnotset':

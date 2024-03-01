@@ -300,7 +300,7 @@ window.utopWidget = {
       default:
         return {
           ...err,
-          message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
+          message: err?.message ? err.message : 'Đã xảy ra lỗi, vui lòng thử lại sau!',
         }
     }
   },

@@ -146,15 +146,27 @@ window.utopWidget = {
                 phoneNumber: data.phoneNumber,
               })
             else {
-              resolve({
-                // ...result,
-                code: 'AchieveGift',
-                message:
-                  window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.winningContent.replaceAll(
-                    '@(giftname)',
-                    result?.giftName
-                  ),
-              })
+              const allocationCode = result?.allocationCode
+              const giftName = result?.giftName
+              fetch(
+                `${window.utopWidgetConfig.baseUrl}/cppromotion/code?userId=${data.phoneNumber}&allocationCode=${allocationCode}`,
+                {
+                  method: 'GET',
+                  headers: {
+                    'Ocp-Apim-Subscription-Key': window.utopWidgetConfig.subKey,
+                  },
+                }
+              )
+                .then((res) => res.json())
+                .then((result2) => {
+                  resolve({
+                    // ...result,
+                    code: 'AchieveGift',
+                    message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.winningContent
+                      .replaceAll('@(giftname)', giftName)
+                      .replaceAll('@(vouchercode)', result2.code),
+                  })
+                })
             }
           })
       } else resolve(false)

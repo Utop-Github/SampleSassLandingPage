@@ -18,7 +18,7 @@ window.utopWidget = {
     return new Promise((resolve, reject) => {
       if (window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.lotteryCodeFields.length !== listKeys.length) {
         reject({
-          code: 'InvalidLength',
+          code: 'INVALID_LENGTH',
           message: 'The submitted form has field lengths that do not match the settings in masterData',
         })
       } else {
@@ -26,17 +26,17 @@ window.utopWidget = {
           if (!field.isRequired) continue
           if (!listKeys.includes(field.attributeName))
             reject({
-              code: 'InvalidField',
+              code: 'INVALID_FIELD',
               message: `Cannot find field ${field.attributeName} to validate`,
             })
           if (field.isRequired && !data[`${field.attributeName}`])
-            reject({ code: 'InvalidRequired', message: `Field ${field.attributeName} is required` })
+            reject({ code: 'INVALID_REQUIRED', message: `Field ${field.attributeName} is required` })
           switch (field.attributeName) {
             case 'phoneNumber': {
               const reg = /^[0-9]{9,10}$/g
               if (!reg.test(data.phoneNumber)) {
                 reject({
-                  code: 'InvalidPhoneNumber',
+                  code: 'INVALID_PHONE_NUMBER',
                   message: `Invalid field phoneNumber - phoneNumber must be 9-10 digits`,
                 })
               }
@@ -46,7 +46,7 @@ window.utopWidget = {
               const reg = /^[a-zA-Zàáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ\s]{1,}$/gi
               if (!reg.test(data.name)) {
                 reject({
-                  code: 'InvalidName',
+                  code: 'INVALID_NAME',
                   message: `Invalid field name - name must be only word`,
                 })
               }
@@ -56,7 +56,7 @@ window.utopWidget = {
               const reg = /^(3[01]|[12][0-9]|0?[1-9])(\/|-)(1[0-2]|0[1-9])\2([0-9]{2})?[0-9]{2}$/g
               if (!reg.test(data.dob)) {
                 reject({
-                  code: 'InvalidDob',
+                  code: 'INVALID_DOB',
                   message: `Invalid field dob - correct pattern: dd/mm/yyyy | dd-mm-yyyy | dd/mm/yy | dd-mm-yy`,
                 })
               }
@@ -87,7 +87,7 @@ window.utopWidget = {
       const button_submit = document.getElementById('utopSubmitFormBtn')
       if (!window?.UTopSDK?.Tracking || !button_submit) {
         reject({
-          code: 'NotFoundSubmitBtn',
+          code: 'NOT_FOUND_SUBMIT_BTN',
           message: 'Cannot find button submit',
         })
       }
@@ -145,7 +145,13 @@ window.utopWidget = {
                 message: result.error.message,
                 phoneNumber: data.phoneNumber,
               })
-            else {
+            else if (result?.statusCode >= 400 && result?.statusCode <= 500) {
+              reject({
+                code: result.statusCode,
+                message: result.message,
+                phoneNumber: data.phoneNumber,
+              })
+            } else {
               const allocationCode = result?.allocationCode
               const giftName = result?.giftName
               fetch(
@@ -173,7 +179,7 @@ window.utopWidget = {
     })
   },
   getMessageError: function (err) {
-    switch (err?.code.toLowerCase()) {
+    switch (err?.code) {
       // case 'missingrequiredfield':
       // case 'createtransactionfail':
       // case 'addattemptfailed': {
@@ -182,26 +188,50 @@ window.utopWidget = {
       //     message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
       //   }
       // }
-      case 'campaignisnotfound':
-      case 'campaignisnotpublished': {
+      case 'CAMPAIGN_IS_NOT_FOUND':
+      case 'CAMPAIGN_IS_NOT_PUBLISHED': {
         return {
           ...err,
-          message: 'Không tìm thấy chiến dịch, vui lòng kiểm tra lại!',
+          message: 'Không tìm thấy Chiến dịch, vui lòng kiểm tra lại!',
         }
       }
-      case 'invalidotp': {
+      case 'NOT_IN_CAMPAIGN_PHASE': {
         return {
           ...err,
-          message: 'OTP không hợp lệ',
+          message: 'Chiến dịch không thuộc giai đoạn nào, vui lòng kiểm tra lại!',
         }
       }
-      case 'otpisdisable': {
+      case 'INVALID_OTP': {
         return {
           ...err,
-          message: 'Không có thiết lập xác thực OTP',
+          message: 'Mã OTP không hợp lệ, vui lòng kiểm tra lại!',
         }
       }
-      case 'campaignnotstartyet': {
+      case 'OTP_IS_DISABLE': {
+        return {
+          ...err,
+          message: 'Không có thiết lập xác thực OTP, vui lòng kiểm tra lại!',
+        }
+      }
+      case 'COLLECTION_NOT_FOUND': {
+        return {
+          ...err,
+          message: 'Không tìm thấy Bộ mã dự thưởng, vui lòng kiểm tra lại!',
+        }
+      }
+      case 'DUPLICATE_TRANSACTION': {
+        return {
+          ...err,
+          message: 'Trùng giao dịch quay quà, vui lòng kiểm tra lại!',
+        }
+      }
+      case 'INVALID_SIGNATURE': {
+        return {
+          ...err,
+          message: 'Giá trị signature không hợp lệ khi gọi API spinGift, vui lòng kiểm tra lại!',
+        }
+      }
+      case 'CAMPAIGN_IS_NOT_START_YET': {
         const time = new Date(window.masterData.campaignInfo.startDate)
         const timeFormat = `${time.getDate() > 9 ? time.getDate() : '0' + time.getDate()}/${
           time.getMonth() + 1 > 9 ? time.getMonth() + 1 : '0' + (time.getMonth() + 1)
@@ -217,8 +247,7 @@ window.utopWidget = {
             ),
         }
       }
-      case 'campaignfinished':
-      case 'outofcampaigntime': {
+      case 'CAMPAIGN_IS_FINISHED': {
         const time = new Date(window.masterData.campaignInfo.endDate)
         const timeFormat = `${time.getDate() > 9 ? time.getDate() : '0' + time.getDate()}/${
           time.getMonth() + 1 > 9 ? time.getMonth() + 1 : '0' + (time.getMonth() + 1)
@@ -234,8 +263,7 @@ window.utopWidget = {
             ),
         }
       }
-      case 'userisblocked':
-      case 'blockuserfailed': {
+      case 'USER_IS_BLOCKED': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.userBlocked
@@ -243,8 +271,7 @@ window.utopWidget = {
             .replaceAll('@(times)', window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.blockedLimit),
         }
       }
-      case 'codeisused':
-      case 'code_used': {
+      case 'CODE_USED': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeUsed.replaceAll(
@@ -253,11 +280,7 @@ window.utopWidget = {
           ),
         }
       }
-      case 'invalidcode':
-      case 'holdcodefailure':
-      case 'codeisnotfound':
-      case 'giftlistisempty':
-      case 'code_not_found': {
+      case 'CODE_NOT_FOUND': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.invalidCode.replaceAll(
@@ -266,54 +289,29 @@ window.utopWidget = {
           ),
         }
       }
-      // case 'dailysubmissionexceeded':
-      // case 'weeklysubmissionexceeded':
-      // case 'monthlysubmissionexceeded':
-      // case 'submissionexceeded': {
-      //   return {
-      //     ...err,
-      //     message: window.masterData.dataStep1.blockingContent.exceedLimit,
-      //   }
-      // }
-      case 'dailysubmissionexceeded':
-      case 'weeklysubmissionexceeded':
-      case 'monthlysubmissionexceeded':
-      case 'submissionexceeded': {
-        if (window.masterData.dataStep2.nodes.length !== 2)
-          return {
-            ...err,
-            message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
-          }
+      case 'DAILY_SUBMISSION_EXCEEDED':
+      case 'WEEKLY_SUBMISSION_EXCEEDED':
+      case 'MONTHLY_SUBMISSION_EXCEEDED':
+      case 'SUBMISSION_EXCEEDED': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.participationLimit,
         }
       }
-      case 'quota_exceeded': {
-        if (window.masterData.dataStep2.nodes.length !== 2)
-          return {
-            ...err,
-            message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
-          }
+      case 'QUOTA_EXCEEDED': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.giftReceptionLimit,
         }
       }
-      case 'giftisnotset':
-      case 'outofstock': {
-        if (window.masterData.dataStep2.nodes.length !== 2)
-          return {
-            ...err,
-            message: 'Đã xảy ra lỗi, vui lòng thử lại sau!',
-          }
+      case 'OUT_OF_STOCK': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[1].dataFlow.eventConfig.configGeneral.giftOutOfStock,
         }
       }
-      case 'status_not_support':
-      case 'collection_is_temporarily_locked': {
+      case 'STATUS_NOT_SUPPORT':
+      case 'COLLECTION_IS_TEMPORARILY_LOCKED': {
         return {
           ...err,
           message: window.masterData.dataStep2.nodes[0].dataFlow.eventConfig.invalidCodeContent.codeCanceled,
@@ -354,7 +352,7 @@ window.utopWidget = {
         if (window.masterData.dataStep1.allowedBrowsers.length === 0) resolve(true)
         if (!window?.utopIdentifyInfo) {
           return reject({
-            code: 'IdentifyFailed',
+            code: 'IDENTIFY_FAILED',
             message: 'Không định danh được trình duyệt!',
           })
         }
@@ -367,7 +365,7 @@ window.utopWidget = {
           (isAllowedIncognito && identify.browserMode !== 'regular')
         ) {
           return reject({
-            code: 'InvalidBrowser',
+            code: 'INVALID_BROWSER',
             message,
           })
         }

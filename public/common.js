@@ -231,6 +231,18 @@ window.utopWidget = {
           message: 'Giá trị signature không hợp lệ khi gọi API spinGift, vui lòng kiểm tra lại!',
         }
       }
+      case 'NOT_SET_GIFT_IN_REGION': {
+        return {
+          ...err,
+          message: 'Chiến dịch không phát được quà khi vùng phát quà không được thiết lập, vui lòng kiểm tra lại!',
+        }
+      }
+      case 'NOT_SET_GIFT_IN_PHASE': {
+        return {
+          ...err,
+          message: 'Chiến dịch không phát được quà khi thời gian phát quà không thuộc giai đoạn, vui lòng kiểm tra lại!',
+        }
+      }
       case 'CAMPAIGN_IS_NOT_START_YET': {
         const time = new Date(window.masterData.campaignInfo.startDate)
         const timeFormat = `${time.getDate() > 9 ? time.getDate() : '0' + time.getDate()}/${

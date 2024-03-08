@@ -506,6 +506,8 @@ Khi sử dụng bất kì hàm được mô tả tại mục **_[III.](#iii-các
 | OTP_IS_DISABLED                  | Không thiết lập xác thực OTP nhưng vẫn gọi API yêu cầu cấp mã xác thực                      | API                  |
 | MISSING_REQUIRED_FIELD           | Thiết lập trường trong biểu mẫu nhưng truyền lên không đủ trường giá trị                    | API                  |
 | DUPLICATE_TRANSACTION            | Trùng giao dịch quay quà                                                                    | API                  |
+| NOT_SET_GIFT_IN_REGION           | Chiến dịch không phát được quà khi vùng phát quà không được thiết lập                       | API                  |
+| NOT_SET_GIFT_IN_PHASE            | Chiến dịch không phát được quà khi thời gian phát quà không thuộc giai đoạn                 | API                  |
 | SOMETHING_WENT_WRONG             | Đã có lỗi xảy ra                                                                            | API                  |
 | INVALID_SIGNATURE                | Giá trị signature không hợp lệ khi gọi API spinGift                                         | API                  |
 | INVALID_OTP                      | Mã OTP không hợp lệ                                                                         | API                  |
